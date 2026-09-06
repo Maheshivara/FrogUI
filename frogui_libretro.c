@@ -51,6 +51,7 @@
 static char g_roms_path[512] = ROMS_PATH_DEFAULT;
 #define ROMS_PATH    g_roms_path
 #define LAUNCH_FILE  "/tmp/frogui_launch.txt"
+#define LANGUAGE_RESTART_FLAG SDCARD_BASE "/frogui/language_restart.flag"
 #define PCSX4ALL_BIN SDCARD_BASE "/cubegm/pcsx4all"
 #define PICO286_BIN  SDCARD_BASE "/cubegm/pico286"
 #define LGPT_BIN     SDCARD_BASE "/cubegm/lgpt"
@@ -434,6 +435,7 @@ static long long usb_mode_initiated_at_ms = 0;
 static uint32_t usb_mode_prev_raw = 0;
 static void ui_toast_show(const char *text);
 static void ui_transition_start(int direction);
+static void system_labels_refresh(void);
 #define SYSTEM_CAROUSEL_FRAMES 12
 static int system_carousel_frame = SYSTEM_CAROUSEL_FRAMES + 1;
 static float system_carousel_start_offset = 0.0f;
@@ -838,6 +840,9 @@ static void font_scan(void) {
 }
 
 static bool settings_menu_active = false;
+/* Bump this for a runtime change that alters rendered strings but not the
+ * browser's directory state.  The idle renderer otherwise intentionally keeps
+ * presenting its last frame. */
 static int settings_menu_idx = 0;       /* row: 0=theme, 1=font, 2=brightness, 3=quick resume, 4=auto-save/auto-load, 5=animations... */
 static int settings_theme_idx = 0;
 static int settings_font_idx = 0;
@@ -1417,12 +1422,13 @@ static int is_image_library_path(const char *path) {
 
 typedef struct {
     const char *folder;
-    const char *label;
+    const char *label_en;
+    char label[96];
 } SystemLabel;
 
 /* Folder names remain the stable lookup key for cores and artwork. The
  * horizontal picker gets friendlier names without changing that contract. */
-static const SystemLabel system_labels[] = {
+static SystemLabel system_labels[] = {
     {"a26", "Atari 2600"}, {"a5200", "Atari 5200"}, {"a78", "Atari 7800"},
     {"a800", "Atari 8-bit"}, {"lnx", "Atari Lynx"},
     {"fc", "Nintendo Entertainment System"},
@@ -1474,16 +1480,27 @@ static const SystemLabel system_labels[] = {
     {"video", "Videos"}, {"images", "Images"}, {"photos", "Images"}
 };
 
+/* Keep friendly labels as a stable snapshot for the active locale. This keeps
+ * the Games hierarchy independent of the in-place JSON parser buffer and
+ * makes a language switch an explicit update rather than a deferred lookup. */
+static void system_labels_refresh(void) {
+    for (size_t i = 0; i < sizeof(system_labels) / sizeof(system_labels[0]); i++) {
+        char key[96];
+        snprintf(key, sizeof(key), "system.%s", system_labels[i].folder);
+        snprintf(system_labels[i].label, sizeof(system_labels[i].label), "%s",
+                 tr_or(key, system_labels[i].label_en));
+    }
+}
+
 static const char *system_display_name(const char *folder) {
-    char key[96];
     if (strcmp(folder, SETTINGS_ENTRY_NAME) == 0) return tr("folder.settings");
     if (strcmp(folder, RECENTS_ENTRY_NAME) == 0) return tr("folder.recents");
     if (strcmp(folder, FAVOURITES_ENTRY_NAME) == 0) return tr("folder.favourites");
     if (!settings_friendly_names) return folder;
     for (size_t i = 0; i < sizeof(system_labels) / sizeof(system_labels[0]); i++)
         if (strcasecmp(folder, system_labels[i].folder) == 0) {
-            snprintf(key, sizeof(key), "system.%s", system_labels[i].folder);
-            return tr_or(key, system_labels[i].label);
+            return system_labels[i].label[0] ? system_labels[i].label
+                                              : system_labels[i].label_en;
         }
     return folder;
 }
@@ -3096,9 +3113,23 @@ static void handle_settings_menu(void) {
             break;
         case RT_LANGUAGE:
             settings_language = (settings_language + delta + LANGUAGE_COUNT) % LANGUAGE_COUNT;
-            i18n_init(language_codes[settings_language]);
-            font_sync_language_fallback();
-            break;
+            /* Locale changes need a fresh FrogUI core instance. Reinitializing
+             * libretro from inside retro_run tears down picoarch itself, so
+             * leave a one-shot boot flag and ask the normal launcher loop to
+             * start us again. The new instance loads the saved locale before
+             * scanning or rendering any system labels. */
+            if (!i18n_init(language_codes[settings_language])) {
+                settings_language = LANGUAGE_EN_US;
+                i18n_init(language_codes[settings_language]);
+            }
+            settings_save_file();
+            {
+                FILE *flag = fopen(LANGUAGE_RESTART_FLAG, "w");
+                if (flag) fclose(flag);
+            }
+            if (environ_cb)
+                environ_cb(RETRO_ENVIRONMENT_SHUTDOWN, NULL);
+            return;
         case RT_TOGGLE:
             *r->val = (*r->val + delta + 2) % 2;
             break;
@@ -4079,7 +4110,22 @@ void retro_init(void) {
     dbg("theme_init done");
     settings_load_file();
     i18n_init(language_codes[settings_language]);
+    system_labels_refresh();
     settings_sections_load();   /* restore the user's collapsed sections */
+    /* A language change requests a normal launcher restart. Consume the flag
+     * once and reopen the same Settings row so the user can continue without
+     * hunting through the menu. */
+    if (access(LANGUAGE_RESTART_FLAG, F_OK) == 0) {
+        unlink(LANGUAGE_RESTART_FLAG);
+        settings_menu_active = true;
+        settings_section_open[1] = true; /* General contains Language. */
+        for (int i = 0; i < SETTINGS_ROW_N; i++)
+            if (settings_rows[i].type == RT_LANGUAGE) {
+                settings_menu_idx = i;
+                break;
+            }
+        settings_build_vis_rows();
+    }
     /* Sync cubevol's stored backlight before checking the daemon. If it had
      * genuinely died, the replacement reads the right value immediately. */
     cube_pmem_backlight_sync(settings_brightness);
