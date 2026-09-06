@@ -3857,6 +3857,8 @@ static void handle_input(void) {
             if (app_index >= 0 && !strcmp(app_defs[app_index].key, "activity")) {
                 ui_transition_start(1);
                 enter_activity_view();
+            } else if (app_index >= 0 && !strcmp(app_defs[app_index].key, "shutdown")) {
+                request_builtin_launch(SHUTDOWN_BIN);
             } else if (app_index >= 0 && !strcmp(app_defs[app_index].key, "usbmode")) {
                 if (access(USB_MODE_BIN, X_OK) != 0)
                     ui_toast_show("USB mode is unavailable");
