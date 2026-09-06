@@ -62,6 +62,7 @@ static char g_roms_path[512] = ROMS_PATH_DEFAULT;
 #define PPSSPP_BIN   SDCARD_BASE "/cubegm/ppsspp"       /* optional standalone SF3000 port */
 #define FROGSHELL_CORE CORES_PATH "/frogshell_libretro.so" /* file manager via picoarch */
 #define USB_MODE_BIN SDCARD_BASE "/cubegm/usb_mtp.sh"  /* expose the SD card to a USB host */
+#define SHUTDOWN_BIN SDCARD_BASE "/cubegm/shutdown.sh"  /* power off the console */
 
 /* Console → core mapping (folder name → libretro .so)
  * Folder names match /mnt/sdcard/roms/ subdirectories (gb300_multicore convention). */
@@ -2308,6 +2309,7 @@ static const AppEntry app_defs[] = {
     {"activity", "app.activity", "Activity Tracker", NULL, NULL, NULL},
     {"frogshell", "app.frogshell", "FrogShell", NULL, NULL, FROGSHELL_CORE},
     {"usbmode", "app.usb_mode", "USB mode", NULL, NULL, USB_MODE_BIN},
+    {"shutdown", "app.shutdown", "Shutdown", NULL, NULL, SHUTDOWN_BIN},
     {"ebook", "app.ebook_reader", "Ebook Reader", "Ebook", "ebooks", NULL},
     {"images", "app.image_viewer", "Image Viewer", "images", "photos", NULL},
     {"videos", "app.videos", "Videos", "videos", "video", NULL},
