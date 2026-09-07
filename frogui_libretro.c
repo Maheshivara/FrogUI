@@ -424,6 +424,7 @@ static uint16_t *view_transition_old = NULL;
 static uint16_t *view_transition_out = NULL;
 static int view_transition_frame = VIEW_TRANSITION_FRAMES + 1;
 static int is_app_folder_name(const char *name);
+static bool is_psp_folder(const char *folder);
 static char ui_toast_text[96] = "";
 static int ui_toast_frames = 0;
 /* The UI's idle path polls input at about 1 kHz.  These must not be frame
@@ -1786,6 +1787,7 @@ static void scan_directory(const char *path) {
             }
             /* Always hide the internal "menu" folder at the root. */
             if (isdir && at_root && strcasecmp(e->d_name, "menu") == 0) continue;
+            if (isdir && at_root && is_psp_folder(e->d_name)) continue;
             /* Media libraries live under Apps, not in the Games tab. */
             if (isdir && at_root && is_app_folder_name(e->d_name)) continue;
             /* Inside a filtered system, per-game folders with no whitelisted
@@ -1829,6 +1831,7 @@ static void scan_directory(const char *path) {
         for (int read = 0; read < entry_count; read++) {
             if (entries[read].is_dir &&
                 (strcasecmp(entries[read].name, "menu") == 0 ||
+                 is_psp_folder(entries[read].name) ||
                  is_app_folder_name(entries[read].name))) continue;
             if (write != read) entries[write] = entries[read];
             write++;
@@ -2679,7 +2682,7 @@ static void search_walk(const char *dir, int depth) {
         struct stat st;
         if (stat(p, &st) != 0) continue;
         if (S_ISDIR(st.st_mode)) {
-            if (depth < 3) search_walk(p, depth + 1);
+            if (!is_psp_folder(e->d_name) && depth < 3) search_walk(p, depth + 1);
         } else if (str_icontains(e->d_name, search_query)) {
             /* Same per-system whitelist as the browser, so search results never
              * resurrect the hidden companion files (PS1 .bin tracks). The
