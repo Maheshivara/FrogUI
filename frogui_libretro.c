@@ -2309,12 +2309,12 @@ static const AppEntry app_defs[] = {
     {"activity", "app.activity", "Activity Tracker", NULL, NULL, NULL},
     {"frogshell", "app.frogshell", "FrogShell", NULL, NULL, FROGSHELL_CORE},
     {"usbmode", "app.usb_mode", "USB mode", NULL, NULL, USB_MODE_BIN},
-    {"shutdown", "app.shutdown", "Shutdown", NULL, NULL, SHUTDOWN_BIN},
     {"ebook", "app.ebook_reader", "Ebook Reader", "Ebook", "ebooks", NULL},
     {"images", "app.image_viewer", "Image Viewer", "images", "photos", NULL},
     {"videos", "app.videos", "Videos", "videos", "video", NULL},
     {"music", "app.music_mp3", "Music / MP3", "music", "audio", NULL},
     {"rockbox", "app.rockbox", "Rockbox", "rockbox", NULL, NULL},
+    {"shutdown", "app.shutdown", "Shutdown", NULL, NULL, SHUTDOWN_BIN},
 };
 
 static const char *app_folder_path(int index, char *out, size_t out_size) {
