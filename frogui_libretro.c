@@ -4645,7 +4645,7 @@ void retro_run(void) {
         } else {
             sig = sig*33u + (unsigned)selected_index;
             sig = sig*33u + (unsigned)scroll_offset;
-            sig = sig*33u + (unsigned)(viewing_recents*4 + viewing_favourites*2 + viewing_search);
+            sig = sig*33u + (unsigned)(viewing_recents*16 + viewing_favourites*8 + viewing_apps*4 + apps_browsing*2 + viewing_activity + viewing_search*32);
             sig = sig*33u + (unsigned)game_switcher_fullscreen;
             for (const char *p = current_path; *p; p++) sig = sig*33u + (unsigned char)*p;
         }

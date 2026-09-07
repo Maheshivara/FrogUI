@@ -9,6 +9,7 @@
 #include <math.h>
 #include <unistd.h>
 #include <dirent.h>
+#include <sys/stat.h>
 
 #ifndef min
 #define min(a, b) ((a) < (b) ? (a) : (b))
@@ -424,6 +425,86 @@ static int artwork_base_path(const char *game_path, const char *folder,
     return 1;
 }
 
+/* Persistent negative cache for missing artwork. Folder mtimes invalidate
+ * entries when a scraper adds or replaces images. */
+typedef struct {
+    uint64_t game_hash;
+    uint64_t folder_sig;
+    uint8_t kind;
+    uint8_t reserved[7];
+} ArtworkMiss;
+#define ARTWORK_MISS_FILE "/mnt/sdcard/frogui/.cache/artwork-misses.bin"
+#define ARTWORK_MISS_MAX 4096
+static ArtworkMiss artwork_misses[ARTWORK_MISS_MAX];
+static size_t artwork_miss_count;
+static int artwork_miss_loaded;
+
+static uint64_t artwork_hash(const char *s) {
+    uint64_t h = UINT64_C(1469598103934665603);
+    if (!s) return h;
+    for (const unsigned char *p = (const unsigned char *)s; *p; p++)
+        h = (h ^ *p) * UINT64_C(1099511628211);
+    return h;
+}
+
+static uint64_t artwork_folder_signature(const char *game_path) {
+    static const char *folders[] = { ".res", "Imgs", "images", "Images", NULL };
+    const char *slash = game_path ? strrchr(game_path, '/') : NULL;
+    if (!slash) return 0;
+    size_t dir_len = (size_t)(slash - game_path);
+    uint64_t sig = UINT64_C(1469598103934665603);
+    char path[1024];
+    for (int i = 0; folders[i]; i++) {
+        struct stat st;
+        int n = snprintf(path, sizeof path, "%.*s/%s", (int)dir_len, game_path, folders[i]);
+        if (n > 0 && (size_t)n < sizeof path && stat(path, &st) == 0) {
+            sig ^= (uint64_t)st.st_mtime + UINT64_C(0x9e3779b97f4a7c15) * (uint64_t)(i + 1);
+            sig = (sig << 7) | (sig >> 57);
+            sig ^= (uint64_t)st.st_size;
+        } else {
+            sig ^= UINT64_C(0x517cc1b727220a95) + (uint64_t)i;
+            sig = (sig << 7) | (sig >> 57);
+        }
+    }
+    return sig;
+}
+
+static void artwork_miss_load(void) {
+    if (artwork_miss_loaded) return;
+    artwork_miss_loaded = 1;
+    FILE *f = fopen(ARTWORK_MISS_FILE, "rb");
+    if (!f) return;
+    artwork_miss_count = fread(artwork_misses, sizeof(ArtworkMiss), ARTWORK_MISS_MAX, f);
+    fclose(f);
+}
+
+static int artwork_miss_contains(uint64_t game_hash, uint64_t folder_sig, ArtworkKind kind) {
+    artwork_miss_load();
+    for (size_t i = 0; i < artwork_miss_count; i++)
+        if (artwork_misses[i].game_hash == game_hash &&
+            artwork_misses[i].folder_sig == folder_sig &&
+            artwork_misses[i].kind == (uint8_t)kind)
+            return 1;
+    return 0;
+}
+
+static void artwork_miss_add(uint64_t game_hash, uint64_t folder_sig, ArtworkKind kind) {
+    artwork_miss_load();
+    if (artwork_miss_contains(game_hash, folder_sig, kind)) return;
+    ArtworkMiss miss = { game_hash, folder_sig, (uint8_t)kind, {0} };
+    if (artwork_miss_count < ARTWORK_MISS_MAX)
+        artwork_misses[artwork_miss_count++] = miss;
+    else {
+        memmove(artwork_misses, artwork_misses + 1,
+                (ARTWORK_MISS_MAX - 1) * sizeof(ArtworkMiss));
+        artwork_misses[ARTWORK_MISS_MAX - 1] = miss;
+    }
+    mkdir("/mnt/sdcard/frogui", 0755);
+    mkdir("/mnt/sdcard/frogui/.cache", 0755);
+    FILE *f = fopen(ARTWORK_MISS_FILE, "ab");
+    if (f) { fwrite(&miss, sizeof miss, 1, f); fclose(f); }
+}
+
 int load_game_artwork(const char *game_path, ArtworkKind kind, Thumbnail *thumb) {
     static const char *folders[] = { ".res", "Imgs", "images", "Images", NULL };
     static const char *box_suffixes[] = { "", NULL };
@@ -435,6 +516,12 @@ int load_game_artwork(const char *game_path, ArtworkKind kind, Thumbnail *thumb)
     const char **suffixes = kind == ARTWORK_TITLE_SCREEN ? title_suffixes : box_suffixes;
     char base[1024];
     if (!game_path || !thumb) return 0;
+    uint64_t game_hash = artwork_hash(game_path);
+    uint64_t folder_sig = artwork_folder_signature(game_path);
+    if (artwork_miss_contains(game_hash, folder_sig, kind)) {
+        free_thumbnail(thumb);
+        return 0;
+    }
     for (int f = 0; folders[f]; f++) {
         for (int s = 0; suffixes[s]; s++) {
             if (!artwork_base_path(game_path, folders[f], suffixes[s], base, sizeof base))
@@ -442,6 +529,7 @@ int load_game_artwork(const char *game_path, ArtworkKind kind, Thumbnail *thumb)
             if (load_thumbnail(base, thumb)) return 1;
         }
     }
+    artwork_miss_add(game_hash, folder_sig, kind);
     return 0;
 }
 
