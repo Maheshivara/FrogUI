@@ -2343,8 +2343,13 @@ static void scan_apps_tab(void) {
     current_path[MAX_PATH_LEN - 1] = '\0';
     apps_root_path[0] = '\0';
     entry_count = 0;
+    const char *tf_device = getenv("TF_DEVICE");
     for (int i = 0; i < (int)(sizeof(app_defs) / sizeof(app_defs[0])); i++) {
         char path[MAX_PATH_LEN];
+        /* SF3000 has a physical power toggle; expose software shutdown on
+         * devices whose power control is momentary (SF3100/SF3500/R36*). */
+        if (!strcmp(app_defs[i].key, "shutdown") && tf_device &&
+            !strcasecmp(tf_device, "SF3000")) continue;
         if (!app_defs[i].bin && !strcmp(app_defs[i].key, "activity")) {
             if (access("/mnt/sdcard/frogui/playtime.txt", R_OK) != 0) continue;
         } else if (app_defs[i].bin) {
