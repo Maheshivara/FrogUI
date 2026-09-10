@@ -848,6 +848,7 @@ static bool settings_menu_active = false;
 static int settings_menu_idx = 0;       /* row: 0=theme, 1=font, 2=brightness, 3=quick resume, 4=auto-save/auto-load, 5=animations... */
 static int settings_theme_idx = 0;
 static int settings_font_idx = 0;
+static int settings_font_size = 26;
 static int settings_brightness = 75;    /* 0..100, step 5 */
 /* Frames left to re-assert brightness after a cubevol (re)start. cubevol applies
  * its OWN stored brightness on start, DELAYED by panel/backlight-delay (to avoid
@@ -934,7 +935,7 @@ typedef struct {
 } SRow;
 
 static const SRow settings_rows[] = {
-    { RT_HEADER, "settings.appearance" }, { RT_THEME, "settings.theme" }, { RT_THEME_PACK, "settings.background_theme_pack" }, { RT_STYLE, "settings.style" }, { RT_ICON_PACK, "settings.icon_pack" }, { RT_TOGGLE, "settings.center_text", &settings_center_text }, { RT_TOGGLE, "settings.friendly_system_names", &settings_friendly_names }, { RT_FONT, "settings.font" }, { RT_TOGGLE, "settings.battery_colour_mode", &settings_battery_color }, { RT_TOGGLE, "settings.background_images", &settings_backgrounds }, { RT_RANGE, "settings.background_dim", &settings_background_dim, 0, 100, 5 }, { RT_WALLPAPER, "settings.wallpaper" }, { RT_WALLFIT, "settings.background_image_fit" },
+    { RT_HEADER, "settings.appearance" }, { RT_THEME, "settings.theme" }, { RT_THEME_PACK, "settings.background_theme_pack" }, { RT_STYLE, "settings.style" }, { RT_ICON_PACK, "settings.icon_pack" }, { RT_TOGGLE, "settings.center_text", &settings_center_text }, { RT_TOGGLE, "settings.friendly_system_names", &settings_friendly_names }, { RT_FONT, "settings.font" }, { RT_RANGE, "settings.font_size", &settings_font_size, 18, 26, 1 }, { RT_TOGGLE, "settings.battery_colour_mode", &settings_battery_color }, { RT_TOGGLE, "settings.background_images", &settings_backgrounds }, { RT_RANGE, "settings.background_dim", &settings_background_dim, 0, 100, 5 }, { RT_WALLPAPER, "settings.wallpaper" }, { RT_WALLFIT, "settings.background_image_fit" },
     { RT_HEADER, "settings.general" }, { RT_LANGUAGE, "settings.language", &settings_language }, { RT_RANGE, "settings.brightness", &settings_brightness, 0, 100, SETTINGS_BRIGHTNESS_STEP }, { RT_TOGGLE, "settings.animations", &settings_anim }, { RT_TOGGLE, "settings.menu_sounds", &settings_menu_sounds }, { RT_TOGGLE, "settings.hide_extensions", &settings_hide_extensions }, { RT_TOGGLE, "settings.hide_empty_folders", &settings_hide_empty },
     { RT_HEADER, "settings.library" }, { RT_ROM_SOURCE, "settings.rom_source" }, { RT_OTG_STATUS, "settings.otg_storage" }, { RT_TOGGLE, "settings.game_switcher", &settings_game_switcher }, { RT_TOGGLE, "settings.start_in_recents", &settings_load_recents },
     { RT_HEADER, "settings.gameplay" }, { RT_TOGGLE, "settings.quick_resume", &settings_quick_resume }, { RT_TOGGLE, "settings.autosave_autoload", &settings_autosave_autoload }, { RT_TOGGLE, "settings.custom_aspect_ratios", &settings_custom_aspect_ratios },
@@ -1124,6 +1125,8 @@ static void settings_apply(void) {
     if (settings_theme_idx < 0 || settings_theme_idx >= theme_count) settings_theme_idx = 0;
     if (settings_style < 0 || settings_style >= STYLE_COUNT) settings_style = STYLE_VERTICAL;
     if (settings_font_idx < 0 || settings_font_idx >= font_count) settings_font_idx = 0;
+    if (settings_font_size < 18) settings_font_size = 18;
+    if (settings_font_size > 26) settings_font_size = 26;
     if (settings_brightness < 0)   settings_brightness = 0;
     if (settings_brightness > 100) settings_brightness = 100;
     if (settings_background_dim < 0)   settings_background_dim = 0;
@@ -1132,6 +1135,7 @@ static void settings_apply(void) {
     theme_sync_artwork_pack();
     if (font_count > 0)
         font_load_file(font_files[settings_font_idx]);
+    font_set_size(settings_font_size);
     font_sync_language_fallback();
     cube_set_backlight(settings_brightness);
     /* Keep cubevol's persistentmem value in sync so its delayed startup apply
@@ -1165,7 +1169,9 @@ static void settings_preview_row(const SRow *r) {
         if (font_count > 0) font_load_file(font_files[settings_font_idx]);
         break;
     case RT_RANGE:
-        if (r->val == &settings_brightness)
+        if (r->val == &settings_font_size)
+            font_set_size(settings_font_size);
+        else if (r->val == &settings_brightness)
             cube_set_backlight(settings_brightness);
         else if (r->val == &settings_background_dim)
             banner_set_dim(settings_background_dim);
@@ -1206,6 +1212,10 @@ static void settings_load_file(void) {
             for (int i = 0; i < font_count; i++)
                 if (strcasecmp(font_files[i], val) == 0 ||
                     strcasecmp(font_disp[i], val) == 0) { settings_font_idx = i; break; }
+        } else if (strcmp(line, "font_size") == 0) {
+            settings_font_size = atoi(val);
+            if (settings_font_size < 18) settings_font_size = 18;
+            if (settings_font_size > 26) settings_font_size = 26;
         } else if (strcmp(line, "language") == 0) {
             for (int i = 0; i < LANGUAGE_COUNT; i++)
                 if (strcasecmp(val, language_codes[i]) == 0) {
@@ -1334,6 +1344,7 @@ static void settings_save_file(void) {
     if (!f) { dbg("settings save: fopen failed"); return; }
     fprintf(f, "theme=%s\n", themes[settings_theme_idx].name);
     fprintf(f, "font=%s\n", font_count > 0 ? font_files[settings_font_idx] : "");
+    fprintf(f, "font_size=%d\n", settings_font_size);
     fprintf(f, "language=%s\n", i18n_current_language());
     fprintf(f, "wallpaper=%s\n",
             (settings_wallpaper_idx > 0 && settings_wallpaper_idx < wallpaper_count)
@@ -4269,7 +4280,10 @@ static void render_settings_menu(void) {
                      tr(otg_roms_available() ? "value.connected" : "value.not_connected"));
             break;
         case RT_TOGGLE: snprintf(line, sizeof line, "%s: < %s >", tr(r->label), tr(*r->val ? "value.on" : "value.off")); break;
-        case RT_RANGE:  snprintf(line, sizeof line, "%s: < %d%% >", tr(r->label), *r->val); break;
+        case RT_RANGE:
+            snprintf(line, sizeof line, r->val == &settings_font_size ? "%s: < %d px >" : "%s: < %d%% >",
+                     tr(r->label), *r->val);
+            break;
         default:        snprintf(line, sizeof line, "%s", tr(r->label)); break;   /* RT_ACTION */
         }
         /* Options sit indented under their ">> HEADER" so the grouping reads

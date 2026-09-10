@@ -13,6 +13,10 @@ void font_load_from_settings(const char *font_name);
 // Searches the standard font directories. Used by the dynamic font picker.
 void font_load_file(const char *font_filename);
 
+// Change the active UI font size and invalidate cached glyphs.
+void font_set_size(int pixels);
+int font_get_size(void);
+
 /* Select one face for the entire UI when the chosen language needs glyphs
  * absent from the configured primary font. */
 void font_sync_language_fallback(void);

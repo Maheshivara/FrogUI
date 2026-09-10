@@ -37,7 +37,8 @@ static uint32_t unicode_upper(uint32_t cp) {
 #ifndef UI_SCALE
 #define UI_SCALE 100
 #endif
-#define FONT_SIZE (26.0f * UI_SCALE / 100.0f)   /* NextUI-style larger text */
+#define DEFAULT_FONT_SIZE 26
+static float ui_font_size = DEFAULT_FONT_SIZE * UI_SCALE / 100.0f;
 
 // Internal function to load a font file
 static int load_font_file(const char *font_filename) {
@@ -88,7 +89,7 @@ static int load_font_file(const char *font_filename) {
     }
 
     // Calculate scale for desired pixel height
-    font_scale = stbtt_ScaleForPixelHeight(&font_info, FONT_SIZE);
+    font_scale = stbtt_ScaleForPixelHeight(&font_info, ui_font_size);
     font_loaded = 1;
     return 1;
 }
@@ -97,14 +98,14 @@ void font_load_file(const char *font_filename) {
     if (!font_filename || !font_filename[0]) return;
     load_font_file(font_filename);
     if (font_loaded)
-        font_scale = stbtt_ScaleForPixelHeight(&font_info, FONT_SIZE);
+        font_scale = stbtt_ScaleForPixelHeight(&font_info, ui_font_size);
 }
 
 void font_load_from_settings(const char *font_name) {
     const char *font_filename = NULL;
-    float custom_size = FONT_SIZE;
+    float custom_size = ui_font_size;
 
-    // Map font names to font files — always render at FONT_SIZE (scaled by UI_SCALE)
+    // Map legacy font names to files; all use the configured UI size.
     if (strcmp(font_name, "Monogram") == 0) {
         font_filename = "monogram.ttf";
     } else if (strcmp(font_name, "GamePocket") == 0) {
@@ -112,7 +113,7 @@ void font_load_from_settings(const char *font_name) {
     } else {
         font_filename = "BPreplayBold.otf";   /* NextUI-style default */
     }
-    custom_size = FONT_SIZE;  // use compile-time size, not hardcoded per-font px
+    custom_size = ui_font_size;
 
     load_font_file(font_filename);
 
@@ -124,7 +125,7 @@ void font_load_from_settings(const char *font_name) {
 void font_init(void) {
     // Default to the NextUI-style bold font; fall back if the file is missing.
     if (load_font_file("BPreplayBold.otf"))
-        font_scale = stbtt_ScaleForPixelHeight(&font_info, FONT_SIZE);
+        font_scale = stbtt_ScaleForPixelHeight(&font_info, ui_font_size);
     else
         font_load_from_settings("GamePocket");
 }
@@ -165,7 +166,7 @@ static int load_fallback_font(void) {
         fallback_buffer = NULL;
         return 0;
     }
-    fallback_scale = stbtt_ScaleForPixelHeight(&fallback_info, FONT_SIZE);
+    fallback_scale = stbtt_ScaleForPixelHeight(&fallback_info, ui_font_size);
     fallback_loaded = 1;
     return 1;
 }
@@ -182,7 +183,7 @@ static int load_latin_fallback(void) {
     if (!latin_buffer || fread(latin_buffer, 1, (size_t)size, fp) != (size_t)size) { free(latin_buffer); latin_buffer = NULL; fclose(fp); return 0; }
     fclose(fp);
     if (!stbtt_InitFont(&latin_info, latin_buffer, stbtt_GetFontOffsetForIndex(latin_buffer, 0))) { free(latin_buffer); latin_buffer = NULL; return 0; }
-    latin_scale = stbtt_ScaleForPixelHeight(&latin_info, FONT_SIZE); latin_loaded = 1; return 1;
+    latin_scale = stbtt_ScaleForPixelHeight(&latin_info, ui_font_size); latin_loaded = 1; return 1;
 }
 
 /* Rasterize glyphs into a static buffer instead of stbtt_GetGlyphBitmap (which
@@ -199,6 +200,21 @@ static float gcache_scale = -1.0f;
 static int   gcache_baseline = 0;
 static void gcache_reset(void) {
     for (int i = 0; i < 512; i++) { free(gcache[i].bmp); gcache[i].bmp = NULL; gcache[i].valid = 0; }
+}
+
+void font_set_size(int pixels) {
+    if (pixels < 18) pixels = 18;
+    if (pixels > DEFAULT_FONT_SIZE) pixels = DEFAULT_FONT_SIZE;
+    ui_font_size = pixels * UI_SCALE / 100.0f;
+    if (font_loaded) font_scale = stbtt_ScaleForPixelHeight(&font_info, ui_font_size);
+    if (fallback_loaded) fallback_scale = stbtt_ScaleForPixelHeight(&fallback_info, ui_font_size);
+    if (latin_loaded) latin_scale = stbtt_ScaleForPixelHeight(&latin_info, ui_font_size);
+    gcache_reset();
+    gcache_scale = -1.0f;
+}
+
+int font_get_size(void) {
+    return (int)(ui_font_size * 100.0f / UI_SCALE + 0.5f);
 }
 
 void font_draw_char(uint16_t *framebuffer, int screen_width, int screen_height,
@@ -444,7 +460,7 @@ void font_draw_text(uint16_t *framebuffer, int screen_width, int screen_height,
 
     while (*text) {
         if (*text == '\n') {
-            y += FONT_SIZE + 4;  // Line spacing
+            y += (int)ui_font_size + 4;
             x = start_x;
             text++;
             prev_glyph = 0;
