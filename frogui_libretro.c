@@ -3024,6 +3024,14 @@ static int remap_wizard_count(void) {
     return FROG_BTN_COUNT - (input_fn_available() ? 0 : 1);
 }
 
+static const char *remap_button_label(FrogButton button) {
+    static const char *direction_keys[] = {
+        "button.up", "button.down", "button.left", "button.right"
+    };
+    return button >= FROG_BTN_UP && button <= FROG_BTN_RIGHT
+         ? tr(direction_keys[button]) : input_btn_name(button);
+}
+
 static void handle_remap_wizard(void) {
     uint32_t raw   = input_get_raw_state();
     uint32_t risen = raw & ~remap_prev_raw;
@@ -3052,9 +3060,9 @@ static void handle_remap_wizard(void) {
         if (remap_step >= remap_wizard_count()) {
             remap_wizard_active = false;
             if (input_save_remap(KEYMAP_FILE) == 0)
-                ui_toast_show("Button mapping saved");
+                ui_toast_show(tr("remap.saved"));
             else
-                ui_toast_show("Could not save button mapping");
+                ui_toast_show(tr("remap.save_failed"));
             /* Button Mapping belongs to Settings. Returning to its caller
              * avoids dropping the user into a partly stale Games/System view
              * after the final bind, which looked like empty icon tiles until
@@ -4311,7 +4319,9 @@ static void render_remap_wizard(void) {
 
     char line[128];
     int y = START_Y;
-    snprintf(line, sizeof(line), "Press  %s  (%d / %d)", input_btn_name((FrogButton)remap_step), remap_step + 1, remap_wizard_count());
+    snprintf(line, sizeof(line), tr("remap.press"),
+             remap_button_label((FrogButton)remap_step),
+             remap_step + 1, remap_wizard_count());
     font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING, y, line, COLOR_TEXT);
 
     y += ITEM_HEIGHT;
