@@ -58,6 +58,7 @@ static char g_roms_path[512] = ROMS_PATH_DEFAULT;
 #define VIDEO_BIN    SDCARD_BASE "/cubegm/video_player" /* hardware-decoded video player */
 #define IMAGE_BIN    SDCARD_BASE "/cubegm/image_viewer" /* hardware-decoded image viewer */
 #define PPSSPP_BIN   SDCARD_BASE "/cubegm/ppsspp"       /* optional standalone SF3000 port */
+#define DSPERATE_BIN SDCARD_BASE "/cubegm/dsperate/run_sf3000.sh"
 #define FROGSHELL_CORE CORES_PATH "/frogshell_libretro.so" /* file manager via picoarch */
 #define USB_MODE_BIN SDCARD_BASE "/cubegm/usb_mtp.sh"  /* expose the SD card to a USB host */
 #define SHUTDOWN_BIN SDCARD_BASE "/cubegm/shutdown.sh"  /* power off the console */
@@ -152,6 +153,7 @@ static const ConsoleMapping console_mappings[] = {
     /* Misc */
     {"pico8",  CORES_PATH "/fake08_libretro.so"},   /* PICO-8 (fake08 core) */
     {"pico286", PICO286_BIN},                        /* DOS PC (standalone, launched directly) */
+    {"nds",    DSPERATE_BIN},                        /* Nintendo DS (DSperate standalone) */
     {"lgpt",   LGPT_BIN},                            /* LittleGPTracker (standalone, launched directly) */
     {"rockbox", ROCKBOX_BIN},                        /* Rockbox music player (standalone) */
     {"Ebook",  EBOOK_BIN},                           /* ebook reader (epub/mobi/pdf, standalone) */
@@ -1376,6 +1378,7 @@ static void settings_save_file(void) {
     fprintf(f, "background_dim=%d\n", settings_background_dim);
     fprintf(f, "file_cache=%s\n", onoff_names[settings_file_cache]);
     fprintf(f, "battery_color=%s\n", onoff_names[settings_battery_color]);
+    fprintf(f, "stock_battery=%s\n", onoff_names[settings_stock_battery]);
     fprintf(f, "game_switcher=%s\n", onoff_names[settings_game_switcher]);
     fprintf(f, "load_recents=%s\n", onoff_names[settings_load_recents]);
     fprintf(f, "rom_source=%s\n", rom_source_names[settings_rom_source]);
@@ -1474,7 +1477,7 @@ static SystemLabel system_labels[] = {
     {"vb", "Virtual Boy"}, {"pcfx", "PC-FX"},
     {"ps", "PlayStation"}, {"psx", "PlayStation"},
     {"ps1", "PlayStation"}, {"ps1r", "PlayStation - ReARMed"},
-    {"psp", "PlayStation Portable"},
+    {"psp", "PlayStation Portable"}, {"nds", "Nintendo DS"},
     {"arcade", "Arcade"}, {"m2k", "Arcade - MAME 2000"}, {"cps1", "Arcade - Capcom CPS-1"},
     {"cps2", "Arcade - Capcom CPS-2"}, {"cps3", "Arcade - Capcom CPS-3"},
     {"c64", "Commodore 64"}, {"c64sc", "Commodore 64"},
@@ -2644,7 +2647,8 @@ static bool is_standalone_bin(const char *name) {
                     strcmp(name, EBOOK_BIN)    == 0 ||
                     strcmp(name, VIDEO_BIN)    == 0 ||
                     strcmp(name, IMAGE_BIN)    == 0 ||
-                    strcmp(name, PPSSPP_BIN)   == 0);
+                    strcmp(name, PPSSPP_BIN)   == 0 ||
+                    strcmp(name, DSPERATE_BIN) == 0);
 }
 
 /* ----------------------------- Search (X button) ----------------------------- */
