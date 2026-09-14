@@ -2583,6 +2583,7 @@ static void request_standalone_launch(const char *bin_path, const char *rom_path
     if (!f) { dbg("standalone_launch: fopen failed"); return; }
     fprintf(f, "standalone\n%s\n%s\n", bin_path, rom_path);
     fclose(f);
+    sync(); /* flush FAT32 before picoarch reads the standalone handoff */
     dbg("standalone_launch: file written");
     const char *rom_base = strrchr(rom_path, '/');
     rom_base = rom_base ? rom_base + 1 : rom_path;
