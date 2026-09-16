@@ -93,6 +93,7 @@
   "app.videos": "视频播放器",
   "app.music_mp3": "音乐播放器",
   "app.rockbox": "Rockbox开源数字音频播放器",
+  "app.shutdown": "关机",
   "pico.menu.resume": "继续游戏",
   "pico.menu.save_state": "保存即时存档",
   "pico.menu.load_state": "读取即时存档",

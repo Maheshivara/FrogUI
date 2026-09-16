@@ -124,7 +124,11 @@
   ,"pico.config.restore_defaults": "Restore defaults"
   ,"pico.config.loaded_game": "Loaded: game config"
   ,"pico.config.loaded_global": "Loaded: global config"
-  ,"pico.legend.back_ok": "B-BACK   A-OKAY",
+  ,"pico.legend.back_ok": "B-НАЗАД   A-OK"
+  ,"pico.emu.save_state": "Сохранить состояние"
+  ,"pico.emu.load_state": "Загрузить состояние"
+  ,"pico.emu.toggle_hud": "Переключить FPS/CPU%",
+  "pico.emu.fast_forward": "Переключить ускорение",
   "pico.control.up": "ВВЕРХ",
   "pico.control.down": "ВНИЗ",
   "pico.control.left": "ВЛЕВО",
