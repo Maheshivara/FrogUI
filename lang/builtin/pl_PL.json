@@ -45,6 +45,7 @@
   "settings.gameplay": "GRANIE",
   "settings.quick_resume": "Szybkie wznowienie",
   "settings.autosave_autoload": "Autozapis / autowczytanie",
+  "settings.custom_aspect_ratios": "Wszystkie proporcje obrazu",
   "settings.system": "SYSTEM",
   "settings.volume": "Głośność",
   "settings.file_cache": "Pamięć podręczna plików",

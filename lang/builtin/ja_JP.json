@@ -195,5 +195,19 @@
   "system.videos": "ビデオ",
   "system.video": "ビデオ",
   "system.images": "画像",
-  "system.photos": "画像"
+  "system.photos": "画像",
+  "pico.control.up": "上",
+  "pico.control.down": "下",
+  "pico.control.left": "左",
+  "pico.control.right": "右",
+  "pico.control.a": "Aボタン",
+  "pico.control.b": "Bボタン",
+  "pico.control.x": "Xボタン",
+  "pico.control.y": "Yボタン",
+  "pico.control.start": "START",
+  "pico.control.select": "SELECT",
+  "pico.control.l": "Lボタン",
+  "pico.control.r": "Rボタン",
+  "pico.control.l2": "L2ボタン",
+  "pico.control.r2": "R2ボタン"
 }
