@@ -6,66 +6,69 @@
   "language.ja_JP": "日本語",
   "language.ru_RU": "Русский",
   "language.zh_CN": "简体中文",
-  "tab.recents": "RECENTS",
-  "tab.games": "GAMES",
-  "tab.apps": "APPS",
-  "tab.settings": "SETTINGS",
-  "legend.enter_back": " A-ENTER  B-BACK ",
-  "legend.favourite": " Y-FAV ",
-  "legend.unfavourite": " Y-UNFAV ",
-  "legend.options": " SEL-OPTIONS ",
-  "legend.search": " X-SEARCH ",
-  "settings.appearance": "APPEARANCE",
-  "settings.theme": "Theme",
-  "settings.background_theme_pack": "Background Theme Pack",
-  "settings.style": "Style",
-  "settings.icon_pack": "Icon Pack",
-  "settings.center_text": "Center Text",
-  "settings.friendly_system_names": "Friendly System Names",
-  "settings.font": "Font",
+  "language.ar_MS": "Арабский",
+  "language.it_IT": "Итальянский",
+  "language.fr_FR": "Французский",
+  "tab.recents": "НЕДАВНИЕ",
+  "tab.games": "ИГРЫ",
+  "tab.apps": "ПРИЛОЖЕНИЯ",
+  "tab.settings": "НАСТРОЙКИ",
+  "legend.enter_back": " A-ВЫБОР  B-НАЗАД ",
+  "legend.favourite": " Y-В ИЗБРАННОЕ ",
+  "legend.unfavourite": " Y-УБРАТЬ ИЗ ИЗБРАННОГО ",
+  "legend.options": " SEL-ОПЦИИ ",
+  "legend.search": " X-ПОИСК ",
+  "settings.appearance": "ВНЕШНИЙ ВИД",
+  "settings.theme": "Тема",
+  "settings.background_theme_pack": "Набор фоновых тем",
+  "settings.style": "Стиль",
+  "settings.icon_pack": "Набор значков",
+  "settings.center_text": "Центрировать текст",
+  "settings.friendly_system_names": "Понятные названия систем",
+  "settings.font": "Шрифт",
   "settings.font_size": "Размер шрифта",
-  "settings.general": "GENERAL",
-  "settings.language": "Language",
-  "settings.brightness": "Brightness",
-  "settings.animations": "Animations",
-  "settings.menu_sounds": "Menu Sounds",
-  "settings.battery_colour_mode": "Battery Colour Mode",
-  "settings.stock_battery_indicator": "Stock Battery Indicator",
-  "settings.background_images": "Background Images",
-  "settings.background_dim": "Background Dim",
-  "settings.wallpaper": "Wallpaper",
-  "settings.background_image_fit": "Background Image Fit",
-  "settings.hide_extensions": "Hide Extensions",
-  "settings.hide_empty_folders": "Hide Empty Folders",
-  "settings.library": "LIBRARY",
-  "settings.rom_source": "ROM Source",
-  "settings.otg_storage": "OTG Storage",
-  "settings.game_switcher": "Game Switcher",
-  "settings.start_in_recents": "Start in Recents",
-  "settings.gameplay": "GAMEPLAY",
-  "settings.quick_resume": "Quick Resume",
-  "settings.autosave_autoload": "Auto-Save/Auto-Load",
+  "settings.general": "ОБЩИЕ",
+  "settings.language": "Язык",
+  "settings.brightness": "Яркость",
+  "settings.animations": "Анимации",
+  "settings.menu_sounds": "Звуки меню",
+  "settings.battery_colour_mode": "Цвет индикатора батареи",
+  "settings.stock_battery_indicator": "Стандартный индикатор батареи",
+  "settings.background_images": "Фоновые изображения",
+  "settings.background_dim": "Затемнение фона",
+  "settings.wallpaper": "Обои",
+  "settings.background_image_fit": "Заполнение фоновым изображением",
+  "settings.hide_extensions": "Скрывать расширения",
+  "settings.hide_empty_folders": "Скрывать пустые папки",
+  "settings.library": "БИБЛИОТЕКА",
+  "settings.rom_source": "Источник ROM",
+  "settings.otg_storage": "OTG-накопитель",
+  "settings.game_switcher": "Переключатель игр",
+  "settings.start_in_recents": "Начинать с недавних игр",
+  "settings.gameplay": "ИГРОВОЙ ПРОЦЕСС",
+  "settings.quick_resume": "Быстрое продолжение",
+  "settings.autosave_autoload": "Автосохранение/автозагрузка",
   "settings.custom_aspect_ratios": "Все соотношения сторон",
-  "settings.system": "SYSTEM",
-  "settings.volume": "Volume",
-  "settings.file_cache": "File Cache",
-  "settings.rebuild_file_cache": "Rebuild File Cache",
-  "settings.disable_sleep": "Disable Sleep (restart)",
-  "settings.version": "TreeFrogUI Version",
-  "settings.button_mapping": "Button Mapping",
-  "value.on": "on",
-  "value.off": "off",
-  "value.connected": "connected",
-  "value.not_connected": "not connected",
-  "folder.settings": "Settings",
-  "folder.recents": "Recent Games",
-  "folder.favourites": "Favourites"
-  ,"header.button_mapping": "BUTTON MAPPING"
-  ,"header.select_core": "SELECT CORE"
-  ,"header.search": "SEARCH"
-  ,"header.add_extension": "ADD EXTENSION"
-  ,"header.usb_mode": "USB MODE"
-  ,"remap.skip": "[B] = skip / keep default"
+  "settings.system": "СИСТЕМА",
+  "settings.volume": "Громкость",
+  "settings.file_cache": "Кэш файлов",
+  "settings.rebuild_file_cache": "Перестроить кэш файлов",
+  "settings.disable_sleep": "Отключить сон (перезапуск)",
+  "settings.version": "Версия TreeFrogUI",
+  "settings.button_mapping": "Назначение кнопок",
+  "value.on": "вкл.",
+  "value.off": "выкл.",
+  "value.connected": "подключено",
+  "value.not_connected": "не подключено",
+  "folder.settings": "Настройки",
+  "folder.recents": "Недавние игры",
+  "folder.favourites": "Избранное"
+  ,"header.button_mapping": "НАЗНАЧЕНИЕ КНОПОК"
+  ,"header.select_core": "ВЫБОР ЯДРА"
+  ,"header.search": "ПОИСК"
+  ,"header.add_extension": "ДОБАВИТЬ РАСШИРЕНИЕ"
+  ,"header.usb_mode": "РЕЖИМ USB"
+  ,"remap.skip": "[B] = пропустить / оставить по умолчанию"
   ,"remap.press": "Нажмите  %s  (%d / %d)"
   ,"remap.saved": "Назначение кнопок сохранено"
   ,"remap.save_failed": "Не удалось сохранить назначение кнопок"
@@ -73,57 +76,57 @@
   ,"button.down": "ВНИЗ"
   ,"button.left": "ВЛЕВО"
   ,"button.right": "ВПРАВО"
-  ,"picker.cores": "Cores"
-  ,"picker.extensions": "EXTENSIONS"
-  ,"picker.filter_files": "Filter files"
-  ,"picker.add_extension": "Add extension..."
-  ,"keyboard.ok_cancel": "A OK   B cancel"
-  ,"usb.initiated": "USB MTP INITIATED"
-  ,"usb.connect_instruction": "Connect the console to a PC over USB-C"
-  ,"usb.back": "B  BACK"
-  ,"usb.connect_back": "A  CONNECT   B  BACK"
-  ,"usb.ready": "USB MTP READY"
-  ,"usb.transfer_warning": "Do not disconnect while files are transferring"
-  ,"app.activity": "Activity Tracker"
+  ,"picker.cores": "Ядра"
+  ,"picker.extensions": "РАСШИРЕНИЯ"
+  ,"picker.filter_files": "Фильтр файлов"
+  ,"picker.add_extension": "Добавить расширение..."
+  ,"keyboard.ok_cancel": "A ОК   B отмена"
+  ,"usb.initiated": "USB MTP ЗАПУЩЕН"
+  ,"usb.connect_instruction": "Подключите консоль к ПК через USB-C"
+  ,"usb.back": "B  НАЗАД"
+  ,"usb.connect_back": "A  ПОДКЛЮЧИТЬ   B  НАЗАД"
+  ,"usb.ready": "USB MTP ГОТОВ"
+  ,"usb.transfer_warning": "Не отключайте устройство во время передачи файлов"
+  ,"app.activity": "Статистика активности"
   ,"app.frogshell": "FrogShell"
-  ,"app.usb_mode": "USB mode"
-  ,"app.ebook_reader": "Ebook Reader"
-  ,"app.image_viewer": "Image Viewer"
-  ,"app.videos": "Videos"
-  ,"app.music_mp3": "Music / MP3"
+  ,"app.usb_mode": "Режим USB"
+  ,"app.ebook_reader": "Читалка электронных книг"
+  ,"app.image_viewer": "Просмотр изображений"
+  ,"app.videos": "Видео"
+  ,"app.music_mp3": "Музыка / MP3"
   ,"app.rockbox": "Rockbox"
   ,"app.shutdown": "Выключение"
-  ,"pico.menu.resume": "Resume game"
-  ,"pico.menu.save_state": "Save state"
-  ,"pico.menu.load_state": "Load state"
-  ,"pico.menu.disc_control": "Disc control"
-  ,"pico.menu.cheats": "Cheats"
-  ,"pico.menu.options": "Options"
-  ,"pico.menu.reset_game": "Reset game"
-  ,"pico.menu.load_new_game": "Load new game"
-  ,"pico.menu.exit": "Exit"
-  ,"pico.options.audio_video": "Audio and video"
-  ,"pico.options.emulator": "Emulator options"
-  ,"pico.options.player_controls": "Player controls"
-  ,"pico.options.emulator_controls": "Emulator controls"
-  ,"pico.options.save_config": "Save config"
-  ,"pico.video.show_fps": "Show FPS"
-  ,"pico.video.show_cpu": "Show CPU %"
-  ,"pico.video.fast_forward": "Fast forward (SELECT+R1)"
-  ,"pico.video.rewind": "Rewind (hold SELECT+B)"
-  ,"pico.video.aspect_ratio": "Aspect ratio"
-  ,"pico.video.filter": "Filter"
-  ,"pico.video.optimize_text": "Optimize text"
-  ,"pico.video.audio_buffer": "Audio buffer"
-  ,"pico.video.mono_output": "Mono output"
-  ,"pico.video.sharpness": "Sharpness"
-  ,"pico.video.volume": "Volume %"
-  ,"pico.config.save_global": "Save global config"
-  ,"pico.config.save_game": "Save game config"
-  ,"pico.config.delete_game": "Delete game config"
-  ,"pico.config.restore_defaults": "Restore defaults"
-  ,"pico.config.loaded_game": "Loaded: game config"
-  ,"pico.config.loaded_global": "Loaded: global config"
+  ,"pico.menu.resume": "Продолжить игру"
+  ,"pico.menu.save_state": "Сохранить состояние"
+  ,"pico.menu.load_state": "Загрузить состояние"
+  ,"pico.menu.disc_control": "Управление диском"
+  ,"pico.menu.cheats": "Читы"
+  ,"pico.menu.options": "Опции"
+  ,"pico.menu.reset_game": "Перезапустить игру"
+  ,"pico.menu.load_new_game": "Загрузить новую игру"
+  ,"pico.menu.exit": "Выйти"
+  ,"pico.options.audio_video": "Аудио и видео"
+  ,"pico.options.emulator": "Настройки эмулятора"
+  ,"pico.options.player_controls": "Управление игрока"
+  ,"pico.options.emulator_controls": "Управление эмулятором"
+  ,"pico.options.save_config": "Сохранить конфигурацию"
+  ,"pico.video.show_fps": "Показывать FPS"
+  ,"pico.video.show_cpu": "Показывать загрузку CPU %"
+  ,"pico.video.fast_forward": "Ускорение (SELECT+R1)"
+  ,"pico.video.rewind": "Перемотка (удерживать SELECT+B)"
+  ,"pico.video.aspect_ratio": "Соотношение сторон"
+  ,"pico.video.filter": "Фильтр"
+  ,"pico.video.optimize_text": "Оптимизировать текст"
+  ,"pico.video.audio_buffer": "Аудиобуфер"
+  ,"pico.video.mono_output": "Монофонический звук"
+  ,"pico.video.sharpness": "Резкость"
+  ,"pico.video.volume": "Громкость %"
+  ,"pico.config.save_global": "Сохранить общую конфигурацию"
+  ,"pico.config.save_game": "Сохранить конфигурацию игры"
+  ,"pico.config.delete_game": "Удалить конфигурацию игры"
+  ,"pico.config.restore_defaults": "Восстановить значения по умолчанию"
+  ,"pico.config.loaded_game": "Загружено: конфигурация игры"
+  ,"pico.config.loaded_global": "Загружено: общая конфигурация"
   ,"pico.legend.back_ok": "B-НАЗАД   A-OK"
   ,"pico.emu.save_state": "Сохранить состояние"
   ,"pico.emu.load_state": "Загрузить состояние"
