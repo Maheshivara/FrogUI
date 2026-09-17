@@ -103,7 +103,7 @@ static void save_file(void) {
  * each game shows once. ps1r uses the same disc formats. */
 static void apply_builtin_defaults(void) {
     static const char *disc_exts[] = { "cue", "m3u", "pbp", "iso", "chd", "img", "mdf", NULL };
-    static const char *folders[]   = { "ps1", "psx", "PS", "ps1r", NULL };
+    static const char *folders[]   = { "ps1", "psx", "PS", "ps1r", "qpsx", NULL };
     for (int f = 0; folders[f]; f++)
         for (int e = 0; disc_exts[e]; e++)
             ext_filter_add_builtin(folders[f], disc_exts[e]);
@@ -140,7 +140,7 @@ void ext_filter_load(void) {
                 strncpy(fl->exts[fl->ext_count], norm, EXT_FILTER_EXT_LEN + 1);
                 /* re-resolve the built-in marker for persisted entries */
                 static const char *disc_exts[] = { "cue", "m3u", "pbp", "iso", "chd", "img", "mdf", NULL };
-                static const char *folders[]   = { "ps1", "psx", "PS", "ps1r", NULL };
+                static const char *folders[]   = { "ps1", "psx", "PS", "ps1r", "qpsx", NULL };
                 int is_builtin = 0;
                 for (int fi = 0; folders[fi]; fi++)
                     if (strcasecmp(folders[fi], line) == 0) {
