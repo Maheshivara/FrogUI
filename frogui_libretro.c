@@ -21,7 +21,6 @@
 #include <linux/fb.h>
 #include <dirent.h>
 #include <ctype.h>
-#include <math.h>
 #include <stdbool.h>
 #include <time.h>
 
@@ -31,7 +30,6 @@
 #include "theme.h"
 #include "recent_games.h"
 #include "favorites.h"
-#include "settings.h"
 #include "banner.h"
 #include "backlight.h"
 #include "input.h"
@@ -63,6 +61,7 @@ static char g_roms_path[512] = ROMS_PATH_DEFAULT;
 #define VIDEO_BIN    SDCARD_BASE "/cubegm/video_player" /* hardware-decoded video player */
 #define IMAGE_BIN    SDCARD_BASE "/cubegm/image_viewer" /* hardware-decoded image viewer */
 #define PPSSPP_BIN   SDCARD_BASE "/cubegm/ppsspp"       /* optional standalone SF3000 port */
+#define DSPERATE_BIN SDCARD_BASE "/cubegm/dsperate/run_sf3000.sh"
 #define FROGSHELL_CORE CORES_PATH "/frogshell_libretro.so" /* file manager via picoarch */
 #define USB_MODE_BIN SDCARD_BASE "/cubegm/usb_mtp.sh"  /* expose the SD card to a USB host */
 #define SHUTDOWN_BIN SDCARD_BASE "/cubegm/shutdown.sh"  /* power off the console */
@@ -157,6 +156,7 @@ static const ConsoleMapping console_mappings[] = {
     /* Misc */
     {"pico8",  CORES_PATH "/fake08_libretro.so"},   /* PICO-8 (fake08 core) */
     {"pico286", PICO286_BIN},                        /* DOS PC (standalone, launched directly) */
+    {"nds",    DSPERATE_BIN},                        /* Nintendo DS (DSperate standalone) */
     {"lgpt",   LGPT_BIN},                            /* LittleGPTracker (standalone, launched directly) */
     {"rockbox", ROCKBOX_BIN},                        /* Rockbox music player (standalone) */
     {"Ebook",  EBOOK_BIN},                           /* ebook reader (epub/mobi/pdf, standalone) */
@@ -522,7 +522,9 @@ static bool usb_mode_raw_edge(FrogButton button, uint32_t raw) {
  * fb1 is rotated and/or double-buffered on SF3500-class devices, so physical
  * top-right is not reliably memory top-right and the active page is not always
  * page zero. Clear every memory corner on every virtual page. */
+static int frogui_stock_battery_indicator(void);
 static void fb1_clear_battery_zone(void) {
+	if (frogui_stock_battery_indicator()) return;
     /* Persistent mmap + cached geometry: open/mmap ONCE. The old per-frame
      * open+ioctl+mmap+munmap+close stalled the loop (visible input lag).
      * Do not latch a failed first attempt: early boot may reach FrogUI before
@@ -599,10 +601,10 @@ static void fb1_clear_all(void) {
  * clears cubevol's battery corner each call so its glyph stays hidden. Called by
  * render_header (every screen, every frame). */
 static int raw_to_pct(int raw) {
-    /* This ADC is too noisy and device-dependent for a truthful percentage.
-     * Use three broad states; give the full state a deliberately wide range. */
-    if (raw < 100) return 25;
-    if (raw < 145) return 50;
+    /* R36SX packs measure about 64 empty, 153 half and 180 full. */
+    if (raw <= 64) return 0;
+    if (raw <= 153) return (raw - 64) * 50 / (153 - 64);
+    if (raw < 180) return 50 + (raw - 153) * 50 / (180 - 153);
     return 100;
 }
 /* Persistent ADC fds, opened O_RDWR ONCE like cubevol (battery_adc_init) - these
@@ -624,6 +626,7 @@ static int g_batt_charging = 0;
 int frogui_battery_charging(void) { return g_batt_charging; }
 int frogui_battery_color_mode(void);   /* defined after settings_battery_color */
 int frogui_battery_pct(void) {
+	if (frogui_stock_battery_indicator()) return -1;
     static int cached = -1, tick = 0;
     if (cached < 0 || (tick++ % 300) == 0) {
         int a1 = read_adc(0), a5 = read_adc(1);
@@ -851,6 +854,7 @@ static bool settings_menu_active = false;
 static int settings_menu_idx = 0;       /* row: 0=theme, 1=font, 2=brightness, 3=quick resume, 4=auto-save/auto-load, 5=animations... */
 static int settings_theme_idx = 0;
 static int settings_font_idx = 0;
+static int settings_font_size = 26;
 static int settings_brightness = 75;    /* 0..100, step 5 */
 /* Frames left to re-assert brightness after a cubevol (re)start. cubevol applies
  * its OWN stored brightness on start, DELAYED by panel/backlight-delay (to avoid
@@ -877,15 +881,16 @@ static int settings_backgrounds = 1;     /* show per-system background images: 0
 static int settings_background_dim = 15; /* darken background artwork: 0=unchanged, 100=black */
 static int settings_file_cache = 1;      /* cache folder listings (mtime-keyed) for fast nav: 0=off, 1=on */
 static int settings_battery_color = 0;   /* "Nel Battery Mode": solid color light by level instead of fill bar */
+static int settings_stock_battery = 0;   /* cubevol's original fb1 indicator */
 enum { LANGUAGE_EN_US, LANGUAGE_PL_PL, LANGUAGE_ES_ES, LANGUAGE_PT_BR, LANGUAGE_JA_JP,
-       LANGUAGE_RU_RU, LANGUAGE_ZH_CN, LANGUAGE_COUNT };
+       LANGUAGE_RU_RU, LANGUAGE_ZH_CN,LANGUAGE_AR_MS,LANGUAGE_IT_IT,LANGUAGE_FR_FR, LANGUAGE_COUNT };
 static int settings_language = LANGUAGE_EN_US;
 static const char *language_codes[LANGUAGE_COUNT] = {
-    "en_US", "pl_PL", "es_ES", "pt_BR", "ja_JP", "ru_RU", "zh_CN"
+    "en_US", "pl_PL", "es_ES", "pt_BR", "ja_JP", "ru_RU", "zh_CN", "ar_MS", "it_IT", "fr_FR"
 };
 static const char *language_name_keys[LANGUAGE_COUNT] = {
     "language.en_US", "language.pl_PL", "language.es_ES", "language.pt_BR", "language.ja_JP",
-    "language.ru_RU", "language.zh_CN"
+    "language.ru_RU", "language.zh_CN", "language.ar_MS", "language.it_IT", "language.fr_FR"
 };
 
 /* Pastel themes are complete treatments, not palette-only options.  Pair
@@ -907,6 +912,7 @@ static void theme_sync_artwork_pack(void) {
 }
 
 int frogui_battery_color_mode(void) { return settings_battery_color; }
+static int frogui_stock_battery_indicator(void) { return settings_stock_battery; }
 static int settings_game_switcher = 1;  /* recents as box-art carousel: 0=off, 1=on */
 static int settings_load_recents = 0;   /* start FrogUI in the recents view: 0=off, 1=on */
 enum { ROM_SOURCE_SD, ROM_SOURCE_OTG, ROM_SOURCE_COUNT };
@@ -937,7 +943,7 @@ typedef struct {
 } SRow;
 
 static const SRow settings_rows[] = {
-    { RT_HEADER, "settings.appearance" }, { RT_THEME, "settings.theme" }, { RT_THEME_PACK, "settings.background_theme_pack" }, { RT_STYLE, "settings.style" }, { RT_ICON_PACK, "settings.icon_pack" }, { RT_TOGGLE, "settings.center_text", &settings_center_text }, { RT_TOGGLE, "settings.friendly_system_names", &settings_friendly_names }, { RT_FONT, "settings.font" }, { RT_TOGGLE, "settings.battery_colour_mode", &settings_battery_color }, { RT_TOGGLE, "settings.background_images", &settings_backgrounds }, { RT_RANGE, "settings.background_dim", &settings_background_dim, 0, 100, 5 }, { RT_WALLPAPER, "settings.wallpaper" }, { RT_WALLFIT, "settings.background_image_fit" },
+    { RT_HEADER, "settings.appearance" }, { RT_THEME, "settings.theme" }, { RT_THEME_PACK, "settings.background_theme_pack" }, { RT_STYLE, "settings.style" }, { RT_ICON_PACK, "settings.icon_pack" }, { RT_TOGGLE, "settings.center_text", &settings_center_text }, { RT_TOGGLE, "settings.friendly_system_names", &settings_friendly_names }, { RT_FONT, "settings.font" }, { RT_RANGE, "settings.font_size", &settings_font_size, 18, 26, 1 }, { RT_TOGGLE, "settings.battery_colour_mode", &settings_battery_color }, { RT_TOGGLE, "settings.stock_battery_indicator", &settings_stock_battery }, { RT_TOGGLE, "settings.background_images", &settings_backgrounds }, { RT_RANGE, "settings.background_dim", &settings_background_dim, 0, 100, 5 }, { RT_WALLPAPER, "settings.wallpaper" }, { RT_WALLFIT, "settings.background_image_fit" },
     { RT_HEADER, "settings.general" }, { RT_LANGUAGE, "settings.language", &settings_language }, { RT_RANGE, "settings.brightness", &settings_brightness, 0, 100, SETTINGS_BRIGHTNESS_STEP }, { RT_TOGGLE, "settings.animations", &settings_anim }, { RT_TOGGLE, "settings.menu_sounds", &settings_menu_sounds }, { RT_TOGGLE, "settings.hide_extensions", &settings_hide_extensions }, { RT_TOGGLE, "settings.hide_empty_folders", &settings_hide_empty },
     { RT_HEADER, "settings.library" }, { RT_ROM_SOURCE, "settings.rom_source" }, { RT_OTG_STATUS, "settings.otg_storage" }, { RT_TOGGLE, "settings.game_switcher", &settings_game_switcher }, { RT_TOGGLE, "settings.start_in_recents", &settings_load_recents },
     { RT_HEADER, "settings.gameplay" }, { RT_TOGGLE, "settings.quick_resume", &settings_quick_resume }, { RT_TOGGLE, "settings.autosave_autoload", &settings_autosave_autoload }, { RT_TOGGLE, "settings.custom_aspect_ratios", &settings_custom_aspect_ratios },
@@ -1132,6 +1138,8 @@ static void settings_apply(void) {
     if (settings_theme_idx < 0 || settings_theme_idx >= theme_count) settings_theme_idx = 0;
     if (settings_style < 0 || settings_style >= STYLE_COUNT) settings_style = STYLE_VERTICAL;
     if (settings_font_idx < 0 || settings_font_idx >= font_count) settings_font_idx = 0;
+    if (settings_font_size < 18) settings_font_size = 18;
+    if (settings_font_size > 26) settings_font_size = 26;
     if (settings_brightness < 0)   settings_brightness = 0;
     if (settings_brightness > 100) settings_brightness = 100;
     if (settings_background_dim < 0)   settings_background_dim = 0;
@@ -1140,6 +1148,7 @@ static void settings_apply(void) {
     theme_sync_artwork_pack();
     if (font_count > 0)
         font_load_file(font_files[settings_font_idx]);
+    font_set_size(settings_font_size);
     font_sync_language_fallback();
     cube_set_backlight(settings_brightness);
     /* Keep cubevol's persistentmem value in sync so its delayed startup apply
@@ -1201,7 +1210,9 @@ static void settings_preview_row(const SRow *r) {
             font_load_file(font_files[settings_font_idx]);
         break;
     case RT_RANGE:
-        if (r->val == &settings_brightness)
+        if (r->val == &settings_font_size)
+            font_set_size(settings_font_size);
+        else if (r->val == &settings_brightness)
             cube_set_backlight(settings_brightness);
         else if (r->val == &settings_background_dim)
             banner_set_dim(settings_background_dim);
@@ -1250,6 +1261,10 @@ static void settings_load_file(void) {
             for (int i = 0; i < font_count; i++)
                 if (strcasecmp(font_files[i], val) == 0 ||
                     strcasecmp(font_disp[i], val) == 0) { settings_font_idx = i; break; }
+        } else if (strcmp(line, "font_size") == 0) {
+            settings_font_size = atoi(val);
+            if (settings_font_size < 18) settings_font_size = 18;
+            if (settings_font_size > 26) settings_font_size = 26;
         } else if (strcmp(line, "language") == 0) {
             for (int i = 0; i < LANGUAGE_COUNT; i++)
                 if (strcasecmp(val, language_codes[i]) == 0) {
@@ -1318,6 +1333,8 @@ static void settings_load_file(void) {
             settings_file_cache = (strcmp(val, "on") == 0) ? 1 : 0;
         } else if (strcmp(line, "battery_color") == 0) {
             settings_battery_color = (strcmp(val, "on") == 0) ? 1 : 0;
+        } else if (strcmp(line, "stock_battery") == 0) {
+            settings_stock_battery = (strcmp(val, "on") == 0) ? 1 : 0;
         } else if (strcmp(line, "disable_sleep") == 0) {
             settings_disable_sleep = (strcmp(val, "on") == 0) ? 1 : 0;
         } else if (strcmp(line, "game_switcher") == 0) {
@@ -1384,6 +1401,7 @@ static void settings_save_file(void) {
     if (!f) { dbg("settings save: fopen failed"); return; }
     fprintf(f, "theme=%s\n", themes[settings_theme_idx].name);
     fprintf(f, "font=%s\n", font_count > 0 ? font_files[settings_font_idx] : "");
+    fprintf(f, "font_size=%d\n", settings_font_size);
     fprintf(f, "language=%s\n", i18n_current_language());
     fprintf(f, "wallpaper=%s\n",
             (settings_wallpaper_idx > 0 && settings_wallpaper_idx < wallpaper_count)
@@ -1410,6 +1428,7 @@ static void settings_save_file(void) {
     fprintf(f, "background_dim=%d\n", settings_background_dim);
     fprintf(f, "file_cache=%s\n", onoff_names[settings_file_cache]);
     fprintf(f, "battery_color=%s\n", onoff_names[settings_battery_color]);
+    fprintf(f, "stock_battery=%s\n", onoff_names[settings_stock_battery]);
     fprintf(f, "game_switcher=%s\n", onoff_names[settings_game_switcher]);
     fprintf(f, "load_recents=%s\n", onoff_names[settings_load_recents]);
     fprintf(f, "rom_source=%s\n", rom_source_names[settings_rom_source]);
@@ -1508,7 +1527,7 @@ static SystemLabel system_labels[] = {
     {"vb", "Virtual Boy"}, {"pcfx", "PC-FX"},
     {"ps", "PlayStation"}, {"psx", "PlayStation"},
     {"ps1", "PlayStation"}, {"ps1r", "PlayStation - ReARMed"},
-    {"psp", "PlayStation Portable"},
+    {"psp", "PlayStation Portable"}, {"nds", "Nintendo DS"},
     {"arcade", "Arcade"}, {"m2k", "Arcade - MAME 2000"}, {"cps1", "Arcade - Capcom CPS-1"},
     {"cps2", "Arcade - Capcom CPS-2"}, {"cps3", "Arcade - Capcom CPS-3"},
     {"c64", "Commodore 64"}, {"c64sc", "Commodore 64"},
@@ -2017,7 +2036,7 @@ static void render_game_switcher(uint16_t *framebuffer) {
     if (n <= 0) {
         render_game_switcher_header(framebuffer, barh);
         font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING, SCREEN_HEIGHT/2,
-                       "No recent games yet", COLOR_TEXT);
+                       "No recent games yet", COLOR_TEXT,0);
         render_legend(framebuffer, LEGEND_X_NONE, 0, 0);
         return;
     }
@@ -2094,27 +2113,27 @@ static void render_game_switcher(uint16_t *framebuffer) {
         render_fill_rect(framebuffer, bx, by, bw, bh, 0x0000);
     if (!cached_drawn)
         font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, bx + UI_S(16), by + bh/2,
-                       "(no screenshot - open the in-game menu once)", COLOR_TEXT);
+                       "(no screenshot - open the in-game menu once)", COLOR_TEXT,0);
 
     /* Bottom overlay: detailed mode carries play info; fullscreen keeps only
      * the selected game and navigation, matching Onion's minimal view. */
     int byb = SCREEN_HEIGHT - barh;
     render_fill_rect(framebuffer, 0, byb, SCREEN_WIDTH, barh, COLOR_SELECT_BG);
     if (game_switcher_fullscreen) {
-        int nw = font_measure_text(g->game_name);
+        int nw = font_measure_text(g->game_name,0);
         int nx = (SCREEN_WIDTH - nw) / 2;
         if (selected_index > 0)
             font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING,
-                           byb + UI_S(8), "<", COLOR_SELECT_TEXT);
+                           byb + UI_S(8), "<", COLOR_SELECT_TEXT,0);
         font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, nx,
-                       byb + UI_S(8), g->game_name, COLOR_SELECT_TEXT);
+                       byb + UI_S(8), g->game_name, COLOR_SELECT_TEXT,0);
         if (selected_index + 1 < n)
             font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT,
-                           SCREEN_WIDTH - PADDING - font_measure_text(">"),
-                           byb + UI_S(8), ">", COLOR_SELECT_TEXT);
+                           SCREEN_WIDTH - PADDING - font_measure_text(">",0),
+                           byb + UI_S(8), ">", COLOR_SELECT_TEXT,0);
     } else {
         font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING,
-                       byb + UI_S(8), g->game_name, COLOR_SELECT_TEXT);
+                       byb + UI_S(8), g->game_name, COLOR_SELECT_TEXT,0);
         char info[96];
         long secs = playtime_lookup(g->full_path);
         if (secs >= 3600)
@@ -2125,10 +2144,10 @@ static void render_game_switcher(uint16_t *framebuffer) {
             snprintf(info, sizeof info, "Played %lds   %d/%d", secs, selected_index + 1, n);
         else
             snprintf(info, sizeof info, "%d/%d", selected_index + 1, n);
-        int iw = font_measure_text(info);
+        int iw = font_measure_text(info,0);
         font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT,
                        SCREEN_WIDTH - iw - PADDING, byb + UI_S(8),
-                       info, COLOR_SELECT_TEXT);
+                       info, COLOR_SELECT_TEXT,0);
         render_game_switcher_header(framebuffer, barh);
     }
 }
@@ -2175,7 +2194,7 @@ static void render_boxart_panel(uint16_t *fb, const char *full_path, const char 
     nm[i] = '\0';
     int tw = (int)strlen(nm) * UI_S(8);
     font_draw_text(fb, SCREEN_WIDTH, SCREEN_HEIGHT, px + (pw - tw) / 2, top + ah + UI_S(4),
-                   nm, COLOR_TEXT);
+                   nm, COLOR_TEXT,0);
 }
 
 /* Switch the browser into the recents view (used by the Recents entry and, when
@@ -2292,7 +2311,7 @@ static void render_activity_graph(uint16_t *fb) {
     for (int i = 0; i < activity_count && i < max_rows; i++)
         if (activity_seconds[i] > max_seconds) max_seconds = activity_seconds[i];
     font_draw_text(fb, SCREEN_WIDTH, SCREEN_HEIGHT, gx, gy - UI_S(18),
-                   "HOURS PLAYED", COLOR_HEADER);
+                   "HOURS PLAYED", COLOR_HEADER,1);
     for (int i = 0; i < activity_count && i < max_rows; i++) {
         int y = gy + i * row;
         int bw = (int)((long)(gw - UI_S(8)) * activity_seconds[i] / max_seconds);
@@ -2306,7 +2325,7 @@ static void render_activity_graph(uint16_t *fb) {
         else
             snprintf(value, sizeof value, "%ldm", activity_seconds[i]/60);
         font_draw_text(fb, SCREEN_WIDTH, SCREEN_HEIGHT, gx + UI_S(4), y + UI_S(3),
-                       value, COLOR_SELECT_TEXT);
+                       value, COLOR_SELECT_TEXT,0);
     }
 }
 
@@ -2319,11 +2338,11 @@ static void render_activity_page(uint16_t *fb) {
     char summary[128];
     snprintf(summary, sizeof summary, "%d GAMES   %ld RUNS   %ldH %02ldM TOTAL",
              activity_count, runs, total / 3600, (total % 3600) / 60);
-    font_draw_text(fb, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING, UI_S(48), "PLAY ACTIVITY", COLOR_HEADER);
-    font_draw_text(fb, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING, UI_S(70), summary, COLOR_TEXT);
+    font_draw_text(fb, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING, UI_S(48), "PLAY ACTIVITY", COLOR_HEADER,1);
+    font_draw_text(fb, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING, UI_S(70), summary, COLOR_TEXT,0);
     if (activity_count <= 0) {
         font_draw_text(fb, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING, UI_S(125),
-                       "Play a game to start your activity history.", COLOR_TEXT);
+                       "Play a game to start your activity history.", COLOR_TEXT,0);
         return;
     }
     long max_seconds = 1;
@@ -2337,11 +2356,11 @@ static void render_activity_page(uint16_t *fb) {
         const char *base = strrchr(activity_paths[i], '/'); base = base ? base + 1 : activity_paths[i];
         char name[96]; strncpy(name, base, sizeof name - 1); name[sizeof name - 1] = '\0';
         char *dot = strrchr(name, '.'); if (dot) *dot = '\0';
-        font_draw_text(fb, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING, y, name, COLOR_TEXT);
+        font_draw_text(fb, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING, y, name, COLOR_TEXT,0);
         char detail[96]; long s = activity_seconds[i];
         snprintf(detail, sizeof detail, "%ld runs   %ldh %02ldm total",
                  activity_runs[i], s / 3600, (s % 3600) / 60);
-        font_draw_text(fb, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING, y + UI_S(20), detail, COLOR_DISABLED);
+        font_draw_text(fb, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING, y + UI_S(20), detail, COLOR_DISABLED,0);
         int bx = SCREEN_WIDTH * 52 / 100, bw = SCREEN_WIDTH - bx - PADDING;
         int fill = (int)((long)bw * s / max_seconds); if (fill < UI_S(3)) fill = UI_S(3);
         render_fill_rect(fb, bx, y + UI_S(9), bw, UI_S(12), COLOR_LEGEND_BG);
@@ -2349,7 +2368,7 @@ static void render_activity_page(uint16_t *fb) {
     }
     if (activity_count > visible)
         font_draw_text(fb, SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH - UI_S(92), SCREEN_HEIGHT - UI_S(42),
-                       "UP/DOWN", COLOR_DISABLED);
+                       "UP/DOWN", COLOR_DISABLED,1);
 }
 
 static int games_tab_selected = 0, games_tab_scroll = 0;
@@ -2614,6 +2633,7 @@ static void request_standalone_launch(const char *bin_path, const char *rom_path
     if (!f) { dbg("standalone_launch: fopen failed"); return; }
     fprintf(f, "standalone\n%s\n%s\n", bin_path, rom_path);
     fclose(f);
+    sync(); /* flush FAT32 before picoarch reads the standalone handoff */
     dbg("standalone_launch: file written");
     const char *rom_base = strrchr(rom_path, '/');
     rom_base = rom_base ? rom_base + 1 : rom_path;
@@ -2678,7 +2698,8 @@ static bool is_standalone_bin(const char *name) {
                     strcmp(name, EBOOK_BIN)    == 0 ||
                     strcmp(name, VIDEO_BIN)    == 0 ||
                     strcmp(name, IMAGE_BIN)    == 0 ||
-                    strcmp(name, PPSSPP_BIN)   == 0);
+                    strcmp(name, PPSSPP_BIN)   == 0 ||
+                    strcmp(name, DSPERATE_BIN) == 0);
 }
 
 /* ----------------------------- Search (X button) ----------------------------- */
@@ -3063,6 +3084,14 @@ static int remap_wizard_count(void) {
     return FROG_BTN_COUNT - (input_fn_available() ? 0 : 1);
 }
 
+static const char *remap_button_label(FrogButton button) {
+    static const char *direction_keys[] = {
+        "button.up", "button.down", "button.left", "button.right"
+    };
+    return button >= FROG_BTN_UP && button <= FROG_BTN_RIGHT
+         ? tr(direction_keys[button]) : input_btn_name(button);
+}
+
 static void handle_remap_wizard(void) {
     uint32_t raw   = input_get_raw_state();
     uint32_t risen = raw & ~remap_prev_raw;
@@ -3091,9 +3120,9 @@ static void handle_remap_wizard(void) {
         if (remap_step >= remap_wizard_count()) {
             remap_wizard_active = false;
             if (input_save_remap(KEYMAP_FILE) == 0)
-                ui_toast_show("Button mapping saved");
+                ui_toast_show(tr("remap.saved"));
             else
-                ui_toast_show("Could not save button mapping");
+                ui_toast_show(tr("remap.save_failed"));
             /* Button Mapping belongs to Settings. Returning to its caller
              * avoids dropping the user into a partly stale Games/System view
              * after the final bind, which looked like empty icon tiles until
@@ -3391,7 +3420,7 @@ static void fit_system_label(const char *source, char *dest, size_t size, int ma
     }
     if (keep > size - 4) keep = size - 4;
     snprintf(dest, size, "%s", source);
-    while (keep > 1 && font_measure_text(dest) > max_width) {
+    while (keep > 1 && font_measure_text(dest,1) > max_width) {
         keep--;
         snprintf(dest, size, "%.*s...", (int)keep, source);
     }
@@ -3419,24 +3448,24 @@ static void render_system_carousel(uint16_t *fb) {
         char label[96];
         fit_system_label(system_display_name(entries[i].name), label, sizeof label,
                          slot_width - UI_S(22));
-        int text_width = font_measure_text(label);
+        int text_width = font_measure_text(label,1);
         int x = center_x + (int)(position * slot_width) - text_width / 2;
         if (x + text_width < 0 || x >= SCREEN_WIDTH) continue;
 
         if (i == selected_index) {
             render_text_pillbox(fb, x, text_y, label,
-                                COLOR_SELECT_BG, COLOR_SELECT_TEXT, UI_S(7));
+                                COLOR_SELECT_BG, COLOR_SELECT_TEXT, UI_S(7),1);
         } else {
             render_text_pillbox(fb, x, text_y, label,
-                                COLOR_LEGEND_BG, COLOR_DISABLED, UI_S(7));
+                                COLOR_LEGEND_BG, COLOR_DISABLED, UI_S(7),1);
         }
     }
 
     char count[32];
     snprintf(count, sizeof count, "%d / %d", selected_index + 1, entry_count);
-    int count_x = (SCREEN_WIDTH - font_measure_text(count)) / 2;
+    int count_x = (SCREEN_WIDTH - font_measure_text(count,0)) / 2;
     font_draw_text(fb, SCREEN_WIDTH, SCREEN_HEIGHT, count_x,
-                   text_y + ITEM_HEIGHT, count, COLOR_HEADER);
+                   text_y + ITEM_HEIGHT, count, COLOR_HEADER,0);
 
     int show_select =
         strcmp(entries[selected_index].name, SETTINGS_ENTRY_NAME) != 0 &&
@@ -3653,7 +3682,7 @@ static void render_system_grid(uint16_t *fb) {
         const char *shown = system_display_name(entries[idx].name);
         char label[96];
         fit_system_label(shown, label, sizeof label, cell_w - UI_S(12));
-        int label_w = font_measure_text(label);
+        int label_w = font_measure_text(label,1);
         int label_y = y + cell_h - ITEM_HEIGHT + UI_S(5);
         if (icon) {
             system_icon_draw(fb, icon, x + UI_S(12), y + UI_S(10),
@@ -3665,21 +3694,21 @@ static void render_system_grid(uint16_t *fb) {
             initials[1] = shown[1] ? shown[1] : '\0';
             for (int i = 0; initials[i]; i++)
                 if (initials[i] >= 'a' && initials[i] <= 'z') initials[i] -= 32;
-            int iw = font_measure_text(initials);
+            int iw = font_measure_text(initials,1);
             font_draw_text(fb, SCREEN_WIDTH, SCREEN_HEIGHT,
                            x + (cell_w - iw) / 2, y + cell_h / 2 - UI_S(8),
-                           initials, active ? tile_text : COLOR_TEXT);
+                           initials, active ? tile_text : COLOR_TEXT,1);
         }
         font_draw_text(fb, SCREEN_WIDTH, SCREEN_HEIGHT,
                        x + (cell_w - label_w) / 2, label_y, label,
-                       active ? tile_text : COLOR_TEXT);
+                       active ? tile_text : COLOR_TEXT,1);
     }
 
     char count[32];
     snprintf(count, sizeof count, "%d / %d", page + 1, pages);
     font_draw_text(fb, SCREEN_WIDTH, SCREEN_HEIGHT,
-                   (SCREEN_WIDTH - font_measure_text(count)) / 2,
-                   bottom + UI_S(4), count, COLOR_HEADER);
+                   (SCREEN_WIDTH - font_measure_text(count,0)) / 2,
+                   bottom + UI_S(4), count, COLOR_HEADER,0);
     int show_select =
         strcmp(entries[selected_index].name, SETTINGS_ENTRY_NAME) != 0 &&
         strcmp(entries[selected_index].name, RECENTS_ENTRY_NAME) != 0 &&
@@ -4310,9 +4339,9 @@ static void render_settings_menu(void) {
              * pillbox when idle ??? but selectable, so pillbox under cursor. */
             snprintf(line, sizeof line, ">> %s", tr(r->label));
             if (settings_menu_idx == idx)
-                render_text_pillbox(framebuffer, PADDING, y, line, COLOR_SELECT_BG, COLOR_SELECT_TEXT, 7);
+                render_text_pillbox(framebuffer, PADDING, y, line, COLOR_SELECT_BG, COLOR_SELECT_TEXT, 7,1);
             else
-                font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING, y, line, COLOR_SELECT_BG);
+                font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING, y, line, COLOR_SELECT_BG,1);
             continue;
         }
         switch (r->type) {
@@ -4337,19 +4366,22 @@ static void render_settings_menu(void) {
                      tr(otg_roms_available() ? "value.connected" : "value.not_connected"));
             break;
         case RT_TOGGLE: snprintf(line, sizeof line, "%s: < %s >", tr(r->label), tr(*r->val ? "value.on" : "value.off")); break;
-        case RT_RANGE:  snprintf(line, sizeof line, "%s: < %d%% >", tr(r->label), *r->val); break;
+        case RT_RANGE:
+            snprintf(line, sizeof line, r->val == &settings_font_size ? "%s: < %d px >" : "%s: < %d%% >",
+                     tr(r->label), *r->val);
+            break;
         default:        snprintf(line, sizeof line, "%s", tr(r->label)); break;   /* RT_ACTION */
         }
         /* Options sit indented under their ">> HEADER" so the grouping reads
          * clearly. Headers stay flush at PADDING. */
         int ix = PADDING + UI_S(16);
         if (settings_menu_idx == idx && settings_row_enabled(r))
-            render_text_pillbox(framebuffer, ix, y, line, COLOR_SELECT_BG, COLOR_SELECT_TEXT, 7);
+            render_text_pillbox(framebuffer, ix, y, line, COLOR_SELECT_BG, COLOR_SELECT_TEXT, 7,0);
         else {
             int color = (!settings_row_enabled(r) || r->type == RT_OTG_STATUS ||
                          (r->type == RT_ROM_SOURCE && !otg_roms_available()))
                       ? COLOR_DISABLED : COLOR_TEXT;
-            font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, ix, y, line, color);
+            font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, ix, y, line, color,0);
         }
     }
     render_scroll_indicator(framebuffer, settings_vis_n, cur, VISIBLE_ENTRIES);
@@ -4365,11 +4397,13 @@ static void render_remap_wizard(void) {
 
     char line[128];
     int y = START_Y;
-    snprintf(line, sizeof(line), "Press  %s  (%d / %d)", input_btn_name((FrogButton)remap_step), remap_step + 1, remap_wizard_count());
-    font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING, y, line, COLOR_TEXT);
+    snprintf(line, sizeof(line), tr("remap.press"),
+             remap_button_label((FrogButton)remap_step),
+             remap_step + 1, remap_wizard_count());
+    font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING, y, line, COLOR_TEXT,1);
 
     y += ITEM_HEIGHT;
-    font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING, y, tr("remap.skip"), COLOR_TEXT);
+    font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING, y, tr("remap.skip"), COLOR_TEXT,0);
 }
 
 static void render_core_picker(void) {
@@ -4381,7 +4415,7 @@ static void render_core_picker(void) {
 
     int y = START_Y;
     /* subtitle: which game/folder we're overriding */
-    font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING, y, core_picker_title, COLOR_TEXT);
+    font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING, y, core_picker_title, COLOR_TEXT,0);
     y += ITEM_HEIGHT;
 
     /* Draw the window of rows [scroll, scroll+PICKER_ROWS). Section headers
@@ -4436,14 +4470,14 @@ static void render_core_picker(void) {
         if (r->type == PR_CORE_HDR || r->type == PR_EXT_HDR) {
             /* headers: accent color; pillbox when the cursor is on them */
             if (idx == core_picker_idx)
-                render_text_pillbox(framebuffer, PADDING, ry, line, COLOR_SELECT_BG, COLOR_SELECT_TEXT, 7);
+                render_text_pillbox(framebuffer, PADDING, ry, line, COLOR_SELECT_BG, COLOR_SELECT_TEXT, 7,1);
             else
                 font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING, ry,
-                               line, COLOR_SELECT_BG);
+                               line, COLOR_SELECT_BG,1);
         } else if (idx == core_picker_idx) {
-            render_text_pillbox(framebuffer, PADDING, ry, line, COLOR_SELECT_BG, COLOR_SELECT_TEXT, 7);
+            render_text_pillbox(framebuffer, PADDING, ry, line, COLOR_SELECT_BG, COLOR_SELECT_TEXT, 7,1);
         } else {
-            font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING, ry, line, COLOR_TEXT);
+            font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING, ry, line, COLOR_TEXT,1);
         }
     }
     render_scroll_indicator(framebuffer, total, core_picker_idx, PICKER_ROWS);
@@ -4457,7 +4491,7 @@ static void render_search_kbd(void) {
     int y = START_Y;
     char q[96];
     snprintf(q, sizeof(q), "> %s_", search_query);
-    font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING, y, q, COLOR_TEXT);
+    font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING, y, q, COLOR_TEXT,0);
     y += ITEM_HEIGHT + UI_S(8);
 
     int cw = UI_S(26), ch = ITEM_HEIGHT;
@@ -4470,9 +4504,9 @@ static void render_search_kbd(void) {
             if (r == KBD_SPECIAL_ROW) { snprintf(lbl, sizeof(lbl), "%s", KBD_SPECIAL[c]); cx = PADDING + c * (cw * 3); }
             else { lbl[0] = KBD_ROWS[r][c]; lbl[1] = '\0'; cx = PADDING + c * cw; }
             if (r == search_kbd_r && c == search_kbd_c)
-                render_text_pillbox(framebuffer, cx, ry, lbl, COLOR_SELECT_BG, COLOR_SELECT_TEXT, 7);
+                render_text_pillbox(framebuffer, cx, ry, lbl, COLOR_SELECT_BG, COLOR_SELECT_TEXT, 7,0);
             else
-                font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, cx, ry, lbl, COLOR_TEXT);
+                font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, cx, ry, lbl, COLOR_TEXT,0);
         }
     }
     render_legend(framebuffer, LEGEND_X_NONE, 0, 0);
@@ -4487,7 +4521,7 @@ static void render_extf_kbd(void) {
     int y = START_Y;
     char q[96];
     snprintf(q, sizeof(q), ".%s_", extf_kbd_text);
-    font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING, y, q, COLOR_TEXT);
+    font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING, y, q, COLOR_TEXT,0);
     y += ITEM_HEIGHT + UI_S(8);
 
     int cw = UI_S(26), ch = ITEM_HEIGHT;
@@ -4500,14 +4534,14 @@ static void render_extf_kbd(void) {
             if (r == KBD_SPECIAL_ROW) { snprintf(lbl, sizeof(lbl), "%s", KBD_SPECIAL[c]); cx = PADDING + c * (cw * 3); }
             else { lbl[0] = KBD_ROWS[r][c]; lbl[1] = '\0'; cx = PADDING + c * cw; }
             if (r == search_kbd_r && c == search_kbd_c)
-                render_text_pillbox(framebuffer, cx, ry, lbl, COLOR_SELECT_BG, COLOR_SELECT_TEXT, 7);
+                render_text_pillbox(framebuffer, cx, ry, lbl, COLOR_SELECT_BG, COLOR_SELECT_TEXT, 7,0);
             else
-                font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, cx, ry, lbl, COLOR_TEXT);
+                font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, cx, ry, lbl, COLOR_TEXT,0);
         }
     }
     font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING,
                    y + KBD_NROWS * ch + UI_S(6),
-                   tr("keyboard.ok_cancel"), COLOR_TEXT);
+                   tr("keyboard.ok_cancel"), COLOR_TEXT,1);
     render_legend(framebuffer, LEGEND_X_NONE, 0, 0);
 }
 
@@ -4522,23 +4556,23 @@ static void render_usb_confirm(void) {
                   : tr("usb.connect_back");
     if (!usb_mode_initiated_active)
         font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT,
-                       (SCREEN_WIDTH - font_measure_text(a)) / 2,
-                       SCREEN_HEIGHT / 2 - UI_S(18), a, COLOR_TEXT);
+                       (SCREEN_WIDTH - font_measure_text(a,0)) / 2,
+                       SCREEN_HEIGHT / 2 - UI_S(18), a, COLOR_TEXT,0);
     const char *pill = usb_mode_initiated_active ? tr("usb.initiated") : tr("usb.ready");
-    render_text_pillbox(framebuffer, (SCREEN_WIDTH - font_measure_text(pill)) / 2,
+    render_text_pillbox(framebuffer, (SCREEN_WIDTH - font_measure_text(pill,0)) / 2,
                         SCREEN_HEIGHT / 2 - UI_S(48), pill,
                         /* Keep the selected-theme contrast pair inside the
                          * pillbox; COLOR_TEXT can equal the pill background
                          * on light themes. */
-                        COLOR_SELECT_BG, COLOR_SELECT_TEXT, 7);
+                        COLOR_SELECT_BG, COLOR_SELECT_TEXT, 7,0);
     font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT,
-                   (SCREEN_WIDTH - font_measure_text(b)) / 2,
-                   SCREEN_HEIGHT / 2 + UI_S(12), b, COLOR_TEXT);
+                   (SCREEN_WIDTH - font_measure_text(b,0)) / 2,
+                   SCREEN_HEIGHT / 2 + UI_S(12), b, COLOR_TEXT,0);
     if (usb_mode_initiated_active) {
         const char *warn = tr("usb.transfer_warning");
         font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT,
-                       (SCREEN_WIDTH - font_measure_text(warn)) / 2,
-                       SCREEN_HEIGHT / 2 + UI_S(42), warn, COLOR_TEXT);
+                       (SCREEN_WIDTH - font_measure_text(warn,0)) / 2,
+                       SCREEN_HEIGHT / 2 + UI_S(42), warn, COLOR_TEXT,0);
     }
 }
 
@@ -4911,7 +4945,7 @@ void retro_run(void) {
                 else if (s >= 60) snprintf(t, sizeof t, "Played %ldm", m);
                 else            snprintf(t, sizeof t, "Played %lds", s);
                 font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING,
-                               SCREEN_HEIGHT - 56, t, COLOR_TEXT);
+                               SCREEN_HEIGHT - 56, t, COLOR_TEXT,0);
             }
         }
         if (viewing_activity && selected_index < activity_count) {
@@ -4928,7 +4962,7 @@ void retro_run(void) {
             } else {
                 size_t used = strlen(t); snprintf(t + used, sizeof t - used, "  all time");
             }
-            font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING, SCREEN_HEIGHT - 56, t, COLOR_TEXT);
+            font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING, SCREEN_HEIGHT - 56, t, COLOR_TEXT,0);
         }
         if (viewing_activity)
             render_activity_page(framebuffer);
