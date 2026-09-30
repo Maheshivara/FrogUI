@@ -23,14 +23,15 @@ int font_get_size(void);
  * absent from the configured primary font. */
 void font_sync_language_fallback(void);
 
-// Draw a text string at position (x, y) with given color (set is_bold to 1 for
-// bold, 0 for regular)
+// Draw a text string at position (x, y) with given color. An optional bold
+// argument is accepted for compatibility with newer renderers.
 void font_draw_text(uint16_t *framebuffer, int screen_width, int screen_height,
                     int x, int y, const char *text, uint16_t color,
-                    int is_bold);
+                    ...);
 
-// Measure text width in pixels (set is_bold to 1 for bold, 0 for regular)
-int font_measure_text(const char *text, int is_bold);
+// Measure text width in pixels. An optional bold argument is accepted for
+// compatibility with newer renderers.
+int font_measure_text(const char *text, ...);
 
 // Vertical metrics for centering: baseline (top-of-cell to baseline) and
 // cap_height (pixel height of capitals = the visible ink band).
