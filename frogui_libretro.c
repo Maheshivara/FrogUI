@@ -64,6 +64,7 @@ static char g_roms_path[512] = ROMS_PATH_DEFAULT;
 #define IMAGE_BIN    SDCARD_BASE "/cubegm/image_viewer" /* hardware-decoded image viewer */
 #define PPSSPP_BIN   SDCARD_BASE "/cubegm/ppsspp"       /* optional standalone SF3000 port */
 #define DSPERATE_BIN SDCARD_BASE "/cubegm/dsperate/run_sf3000.sh"
+#define J2ME_CORE    CORES_PATH "/j2me_libretro.so"
 #define FROGSHELL_CORE CORES_PATH "/frogshell_libretro.so" /* file manager via picoarch */
 #define USB_MODE_BIN SDCARD_BASE "/cubegm/usb_mtp.sh"  /* expose the SD card to a USB host */
 #define SHUTDOWN_BIN SDCARD_BASE "/cubegm/shutdown.sh"  /* power off the console */
@@ -159,6 +160,7 @@ static const ConsoleMapping console_mappings[] = {
     {"pico8",  CORES_PATH "/fake08_libretro.so"},   /* PICO-8 (fake08 core) */
     {"pico286", PICO286_BIN},                        /* DOS PC (standalone, launched directly) */
     {"nds",    DSPERATE_BIN},                        /* Nintendo DS (DSperate standalone) */
+    {"j2me",   J2ME_CORE},                           /* J2ME / MIDP 2.0 (.jar/.jad) */
     {"lgpt",   LGPT_BIN},                            /* LittleGPTracker (standalone, launched directly) */
     {"rockbox", ROCKBOX_BIN},                        /* Rockbox music player (standalone) */
     {"Ebook",  EBOOK_BIN},                           /* ebook reader (epub/mobi/pdf, standalone) */
@@ -265,6 +267,8 @@ static const ExtensionMapping ext_mappings[] = {
     {".rom",  CORES_PATH "/o2em_libretro.so"},
     {".adf",  CORES_PATH "/uae_libretro.so"},
     {".st",   CORES_PATH "/castaway_libretro.so"},
+    {".jar",  J2ME_CORE},
+    {".jad",  J2ME_CORE},
     {".msa",  CORES_PATH "/castaway_libretro.so"},
     {".cue",  CORES_PATH "/pcsx_rearmed_libretro.so"},
     {".iso",  CORES_PATH "/pcsx_rearmed_libretro.so"},
