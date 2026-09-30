@@ -151,6 +151,7 @@
   "system.thom": "Thomson MO / TO",
   "system.xmil": "Sharp X68000",
   "system.pico286": "DOS / PC",
+  "system.j2me": "Juegos Java",
   "system.dos": "DOS",
   "system.prboom": "Doom",
   "system.doom": "Doom",

@@ -1539,6 +1539,7 @@ static SystemLabel system_labels[] = {
     {"col", "ColecoVision"}, {"amstrad", "Amstrad CPC"},
     {"amstradb", "Amstrad CPC Plus"}, {"thom", "Thomson MO / TO"},
     {"xmil", "Sharp X68000"}, {"pico286", "DOS / PC"},
+    {"j2me", "Java Games"},
     {"dos", "DOS"}, {"prboom", "Doom"}, {"doom", "Doom"},
     {"quake", "Quake"}, {"quake2", "Quake II"}, {"wolf3d", "Wolfenstein 3D"},
     {"outrun", "Out Run"}, {"cavestory", "Cave Story"},
