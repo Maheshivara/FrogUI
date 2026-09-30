@@ -3443,10 +3443,10 @@ static void render_system_carousel(uint16_t *fb) {
 
         if (i == selected_index) {
             render_text_pillbox(fb, x, text_y, label,
-                                COLOR_SELECT_BG, COLOR_SELECT_TEXT, UI_S(7));
+                                COLOR_SELECT_BG, COLOR_SELECT_TEXT, UI_S(7), 0);
         } else {
             render_text_pillbox(fb, x, text_y, label,
-                                COLOR_LEGEND_BG, COLOR_DISABLED, UI_S(7));
+                                COLOR_LEGEND_BG, COLOR_DISABLED, UI_S(7), 0);
         }
     }
 
@@ -4328,7 +4328,7 @@ static void render_settings_menu(void) {
              * pillbox when idle ??? but selectable, so pillbox under cursor. */
             snprintf(line, sizeof line, ">> %s", tr(r->label));
             if (settings_menu_idx == idx)
-                render_text_pillbox(framebuffer, PADDING, y, line, COLOR_SELECT_BG, COLOR_SELECT_TEXT, 7);
+                render_text_pillbox(framebuffer, PADDING, y, line, COLOR_SELECT_BG, COLOR_SELECT_TEXT, 7, 0);
             else
                 font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING, y, line, COLOR_SELECT_BG);
             continue;
@@ -4365,7 +4365,7 @@ static void render_settings_menu(void) {
          * clearly. Headers stay flush at PADDING. */
         int ix = PADDING + UI_S(16);
         if (settings_menu_idx == idx && settings_row_enabled(r))
-            render_text_pillbox(framebuffer, ix, y, line, COLOR_SELECT_BG, COLOR_SELECT_TEXT, 7);
+            render_text_pillbox(framebuffer, ix, y, line, COLOR_SELECT_BG, COLOR_SELECT_TEXT, 7, 0);
         else {
             int color = (!settings_row_enabled(r) || r->type == RT_OTG_STATUS ||
                          (r->type == RT_ROM_SOURCE && !otg_roms_available()))
@@ -4457,12 +4457,12 @@ static void render_core_picker(void) {
         if (r->type == PR_CORE_HDR || r->type == PR_EXT_HDR) {
             /* headers: accent color; pillbox when the cursor is on them */
             if (idx == core_picker_idx)
-                render_text_pillbox(framebuffer, PADDING, ry, line, COLOR_SELECT_BG, COLOR_SELECT_TEXT, 7);
+                render_text_pillbox(framebuffer, PADDING, ry, line, COLOR_SELECT_BG, COLOR_SELECT_TEXT, 7, 0);
             else
                 font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING, ry,
                                line, COLOR_SELECT_BG);
         } else if (idx == core_picker_idx) {
-            render_text_pillbox(framebuffer, PADDING, ry, line, COLOR_SELECT_BG, COLOR_SELECT_TEXT, 7);
+                render_text_pillbox(framebuffer, PADDING, ry, line, COLOR_SELECT_BG, COLOR_SELECT_TEXT, 7, 0);
         } else {
             font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, PADDING, ry, line, COLOR_TEXT);
         }
@@ -4491,7 +4491,7 @@ static void render_search_kbd(void) {
             if (r == KBD_SPECIAL_ROW) { snprintf(lbl, sizeof(lbl), "%s", KBD_SPECIAL[c]); cx = PADDING + c * (cw * 3); }
             else { lbl[0] = KBD_ROWS[r][c]; lbl[1] = '\0'; cx = PADDING + c * cw; }
             if (r == search_kbd_r && c == search_kbd_c)
-                render_text_pillbox(framebuffer, cx, ry, lbl, COLOR_SELECT_BG, COLOR_SELECT_TEXT, 7);
+                render_text_pillbox(framebuffer, cx, ry, lbl, COLOR_SELECT_BG, COLOR_SELECT_TEXT, 7, 0);
             else
                 font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, cx, ry, lbl, COLOR_TEXT);
         }
@@ -4521,7 +4521,7 @@ static void render_extf_kbd(void) {
             if (r == KBD_SPECIAL_ROW) { snprintf(lbl, sizeof(lbl), "%s", KBD_SPECIAL[c]); cx = PADDING + c * (cw * 3); }
             else { lbl[0] = KBD_ROWS[r][c]; lbl[1] = '\0'; cx = PADDING + c * cw; }
             if (r == search_kbd_r && c == search_kbd_c)
-                render_text_pillbox(framebuffer, cx, ry, lbl, COLOR_SELECT_BG, COLOR_SELECT_TEXT, 7);
+                render_text_pillbox(framebuffer, cx, ry, lbl, COLOR_SELECT_BG, COLOR_SELECT_TEXT, 7, 0);
             else
                 font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT, cx, ry, lbl, COLOR_TEXT);
         }
@@ -4551,7 +4551,7 @@ static void render_usb_confirm(void) {
                         /* Keep the selected-theme contrast pair inside the
                          * pillbox; COLOR_TEXT can equal the pill background
                          * on light themes. */
-                        COLOR_SELECT_BG, COLOR_SELECT_TEXT, 7);
+                        COLOR_SELECT_BG, COLOR_SELECT_TEXT, 7, 0);
     font_draw_text(framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT,
                    (SCREEN_WIDTH - font_measure_text(b)) / 2,
                    SCREEN_HEIGHT / 2 + UI_S(12), b, COLOR_TEXT);
