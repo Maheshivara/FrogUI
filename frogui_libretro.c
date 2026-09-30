@@ -204,7 +204,7 @@ static const ConsoleMapping console_mappings[] = {
     {"psx",    CORES_PATH "/pcsx_rearmed_libretro.so"},
     {"PS",     CORES_PATH "/pcsx_rearmed_libretro.so"},
     {"ps1r",   CORES_PATH "/pcsx_rearmed_libretro.so"},
-    {"qpsx",   CORES_PATH "/pcsx4all_libretro.so"},
+    {"qpsx",   CORES_PATH "/qpsx_libretro.so"},
     /* PSP: PPSSPP libretro core (software renderer, IR interpreter) */
     {"psp",    CORES_PATH "/ppsspp_libretro.so"},
     {"PSP",    CORES_PATH "/ppsspp_libretro.so"},
@@ -858,7 +858,7 @@ static bool settings_menu_active = false;
 static int settings_menu_idx = 0;       /* row: 0=theme, 1=font, 2=brightness, 3=quick resume, 4=auto-save/auto-load, 5=animations... */
 static int settings_theme_idx = 0;
 static int settings_font_idx = 0;
-static int settings_font_size = 20;
+static int settings_font_size = 23;
 static int settings_brightness = 75;    /* 0..100, step 5 */
 /* Frames left to re-assert brightness after a cubevol (re)start. cubevol applies
  * its OWN stored brightness on start, DELAYED by panel/backlight-delay (to avoid
@@ -1615,7 +1615,8 @@ static void load_banner_for_view(const char *path, bool is_recents, bool is_favo
          * working for the canonical arcade and Game Boy Color folders too. */
         const char *names[] = { name,
             strcasecmp(name, "arcade") == 0 ? "m2k" : NULL,
-            strcasecmp(name, "gbc") == 0 ? "gb" : NULL, NULL };
+            strcasecmp(name, "gbc") == 0 ? "gb" : NULL,
+            strcasecmp(name, "qpsx") == 0 ? "ps1" : NULL, NULL };
         for (int n = 0; names[n]; n++)
             for (int i = 0; exts[i]; i++) {
                 snprintf(img, sizeof(img), "%s/%s.%s", banner_dir, names[n], exts[i]);

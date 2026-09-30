@@ -37,7 +37,7 @@ static uint32_t unicode_upper(uint32_t cp) {
 #ifndef UI_SCALE
 #define UI_SCALE 100
 #endif
-#define DEFAULT_FONT_SIZE 20
+#define DEFAULT_FONT_SIZE 23
 static float ui_font_size = DEFAULT_FONT_SIZE * UI_SCALE / 100.0f;
 
 // Internal function to load a font file
