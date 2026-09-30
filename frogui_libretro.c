@@ -1621,6 +1621,7 @@ static void load_banner_for_view(const char *path, bool is_recents, bool is_favo
         const char *names[] = { name,
             strcasecmp(name, "arcade") == 0 ? "m2k" : NULL,
             strcasecmp(name, "gbc") == 0 ? "gb" : NULL,
+            strcasecmp(name, "j2me") == 0 ? "pico8" : NULL,
             strcasecmp(name, "qpsx") == 0 ? "ps1" : NULL, NULL };
         for (int n = 0; names[n]; n++)
             for (int i = 0; exts[i]; i++) {
