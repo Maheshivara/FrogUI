@@ -1,11 +1,15 @@
 #include "i18n.h"
 
+#include <dirent.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #define I18N_MAX_FILE 32768
 #define I18N_MAX_ENTRIES 320
 #define I18N_KEY_MAX 80
+#define I18N_MAX_LANGUAGES 32
+#define I18N_LANGUAGE_MAX 16
 
 typedef struct {
   char key[I18N_KEY_MAX];
@@ -14,7 +18,79 @@ typedef struct {
 static char i18n_data[I18N_MAX_FILE];
 static I18nEntry i18n_entries[I18N_MAX_ENTRIES];
 static int i18n_entry_count;
-static char i18n_language[16] = "en_US";
+static char i18n_language[I18N_LANGUAGE_MAX] = "en_US";
+static char i18n_languages[I18N_MAX_LANGUAGES][I18N_LANGUAGE_MAX];
+static int i18n_language_total;
+
+static int language_compare(const void *a, const void *b) {
+  return strcmp((const char *)a, (const char *)b);
+}
+
+int i18n_scan_languages(void) {
+  static const char *paths[] = {
+      "/mnt/sdcard/frogui/lang/builtin", "frogui/lang/builtin", "lang/builtin"};
+  DIR *dir = NULL;
+  struct dirent *entry;
+  int path_index;
+
+  i18n_language_total = 0;
+  for (path_index = 0; path_index < (int)(sizeof(paths) / sizeof(paths[0])); path_index++) {
+    dir = opendir(paths[path_index]);
+    if (dir)
+      break;
+  }
+  if (!dir) {
+    strcpy(i18n_languages[0], "en_US");
+    i18n_language_total = 1;
+    return 1;
+  }
+
+  while ((entry = readdir(dir)) && i18n_language_total < I18N_MAX_LANGUAGES) {
+    const char *dot = strrchr(entry->d_name, '.');
+    size_t length;
+    int valid = 1;
+    if (!dot || strcmp(dot, ".json") != 0 || dot == entry->d_name)
+      continue;
+    length = (size_t)(dot - entry->d_name);
+    if (length >= I18N_LANGUAGE_MAX)
+      continue;
+    for (size_t i = 0; i < length; i++)
+      if (!((entry->d_name[i] >= 'a' && entry->d_name[i] <= 'z') ||
+            (entry->d_name[i] >= 'A' && entry->d_name[i] <= 'Z') ||
+            (entry->d_name[i] >= '0' && entry->d_name[i] <= '9') ||
+            entry->d_name[i] == '_')) {
+        valid = 0;
+        break;
+      }
+    if (valid) {
+      memcpy(i18n_languages[i18n_language_total], entry->d_name, length);
+      i18n_languages[i18n_language_total++][length] = '\0';
+    }
+  }
+  closedir(dir);
+  if (!i18n_language_total) {
+    strcpy(i18n_languages[0], "en_US");
+    i18n_language_total = 1;
+    return 1;
+  }
+  qsort(i18n_languages, (size_t)i18n_language_total, sizeof(i18n_languages[0]),
+        language_compare);
+  for (int i = 0; i < i18n_language_total; i++)
+    if (strcmp(i18n_languages[i], "en_US") == 0) {
+      char fallback[I18N_LANGUAGE_MAX];
+      strcpy(fallback, i18n_languages[0]);
+      strcpy(i18n_languages[0], i18n_languages[i]);
+      strcpy(i18n_languages[i], fallback);
+      break;
+    }
+  return i18n_language_total;
+}
+
+int i18n_language_count(void) { return i18n_language_total; }
+
+const char *i18n_language_code_at(int index) {
+  return index >= 0 && index < i18n_language_total ? i18n_languages[index] : NULL;
+}
 
 static char *skip_ws(char *p) {
   while (*p == ' ' || *p == '\t' || *p == '\r' || *p == '\n')

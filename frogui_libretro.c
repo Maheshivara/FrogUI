@@ -889,16 +889,7 @@ static int settings_backgrounds = 1;     /* show per-system background images: 0
 static int settings_background_dim = 15; /* darken background artwork: 0=unchanged, 100=black */
 static int settings_file_cache = 1;      /* cache folder listings (mtime-keyed) for fast nav: 0=off, 1=on */
 static int settings_battery_color = 0;   /* "Nel Battery Mode": solid color light by level instead of fill bar */
-enum { LANGUAGE_EN_US, LANGUAGE_PL_PL, LANGUAGE_ES_ES, LANGUAGE_PT_BR, LANGUAGE_JA_JP,
-       LANGUAGE_RU_RU, LANGUAGE_ZH_CN, LANGUAGE_COUNT };
-static int settings_language = LANGUAGE_EN_US;
-static const char *language_codes[LANGUAGE_COUNT] = {
-    "en_US", "pl_PL", "es_ES", "pt_BR", "ja_JP", "ru_RU", "zh_CN"
-};
-static const char *language_name_keys[LANGUAGE_COUNT] = {
-    "language.en_US", "language.pl_PL", "language.es_ES", "language.pt_BR", "language.ja_JP",
-    "language.ru_RU", "language.zh_CN"
-};
+static int settings_language;
 
 /* Pastel themes are complete treatments, not palette-only options.  Pair
  * them with their matching artwork pack whenever the theme is applied. */
@@ -1270,8 +1261,8 @@ static void settings_load_file(void) {
         } else if (strcmp(line, "font_size") == 0) {
             settings_font_size = atoi(val);
         } else if (strcmp(line, "language") == 0) {
-            for (int i = 0; i < LANGUAGE_COUNT; i++)
-                if (strcasecmp(val, language_codes[i]) == 0) {
+            for (int i = 0; i < i18n_language_count(); i++)
+                if (strcasecmp(val, i18n_language_code_at(i)) == 0) {
                     settings_language = i;
                     break;
                 }
@@ -3202,15 +3193,15 @@ static void handle_settings_menu(void) {
             settings_rom_source = (settings_rom_source + delta + ROM_SOURCE_COUNT) % ROM_SOURCE_COUNT;
             break;
         case RT_LANGUAGE:
-            settings_language = (settings_language + delta + LANGUAGE_COUNT) % LANGUAGE_COUNT;
+            settings_language = (settings_language + delta + i18n_language_count()) % i18n_language_count();
             /* Locale changes need a fresh FrogUI core instance. Reinitializing
              * libretro from inside retro_run tears down picoarch itself, so
              * leave a one-shot boot flag and ask the normal launcher loop to
              * start us again. The new instance loads the saved locale before
              * scanning or rendering any system labels. */
-            if (!i18n_init(language_codes[settings_language])) {
-                settings_language = LANGUAGE_EN_US;
-                i18n_init(language_codes[settings_language]);
+            if (!i18n_init(i18n_language_code_at(settings_language))) {
+                settings_language = 0;
+                i18n_init(i18n_language_code_at(settings_language));
             }
             settings_save_file();
             {
@@ -4206,6 +4197,7 @@ void retro_init(void) {
     input_init();
     input_load_remap(KEYMAP_FILE);
     i18n_init("en_US");
+    i18n_scan_languages();
     font_init();
     dbg("font_init done");
     font_scan();
@@ -4219,7 +4211,7 @@ void retro_init(void) {
     theme_init();
     dbg("theme_init done");
     settings_load_file();
-    i18n_init(language_codes[settings_language]);
+    i18n_init(i18n_language_code_at(settings_language));
     system_labels_refresh();
     settings_sections_load();   /* restore the user's collapsed sections */
     /* A language change requests a normal launcher restart. Consume the flag
@@ -4350,8 +4342,12 @@ static void render_settings_menu(void) {
         case RT_WALLFIT:   snprintf(line, sizeof line, "%s: < %s >", tr(r->label), wallpaper_fit_names[settings_wallpaper_fit]); break;
         case RT_THEME_PACK: snprintf(line, sizeof line, "%s: < %s >", tr(r->label), theme_pack_disp[settings_theme_pack_idx]); break;
         case RT_ICON_PACK: snprintf(line, sizeof line, "%s: < %s >", tr(r->label), icon_pack_disp[settings_icon_pack_idx]); break;
-        case RT_LANGUAGE: snprintf(line, sizeof line, "%s: < %s >", tr(r->label),
-                                   tr(language_name_keys[settings_language])); break;
+        case RT_LANGUAGE: {
+            char key[32];
+            snprintf(key, sizeof key, "language.%s", i18n_language_code_at(settings_language));
+            snprintf(line, sizeof line, "%s: < %s >", tr(r->label), tr(key));
+            break;
+        }
         case RT_ROM_SOURCE:
             if (otg_roms_available())
                 snprintf(line, sizeof line, "%s: < %s >", tr(r->label), rom_source_names[settings_rom_source]);
