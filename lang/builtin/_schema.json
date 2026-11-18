@@ -1,0 +1,1038 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TreeFrogUI Translation File",
+  "description": "Every translation key is required and every value must be a string.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "_default.font_name": {
+      "type": "string"
+    },
+    "language.en_US": {
+      "type": "string"
+    },
+    "language.pl_PL": {
+      "type": "string"
+    },
+    "language.es_ES": {
+      "type": "string"
+    },
+    "language.pt_BR": {
+      "type": "string"
+    },
+    "language.ja_JP": {
+      "type": "string"
+    },
+    "language.ru_RU": {
+      "type": "string"
+    },
+    "language.zh_CN": {
+      "type": "string"
+    },
+    "language.ar_MS": {
+      "type": "string"
+    },
+    "language.it_IT": {
+      "type": "string"
+    },
+    "language.fr_FR": {
+      "type": "string"
+    },
+    "language.de_DE": {
+      "type": "string"
+    },
+    "language.tr_TR": {
+      "type": "string"
+    },
+    "tab.recents": {
+      "type": "string"
+    },
+    "tab.games": {
+      "type": "string"
+    },
+    "tab.apps": {
+      "type": "string"
+    },
+    "tab.settings": {
+      "type": "string"
+    },
+    "legend.enter_back": {
+      "type": "string"
+    },
+    "legend.favourite": {
+      "type": "string"
+    },
+    "legend.unfavourite": {
+      "type": "string"
+    },
+    "legend.options": {
+      "type": "string"
+    },
+    "legend.search": {
+      "type": "string"
+    },
+    "settings.appearance": {
+      "type": "string"
+    },
+    "settings.theme": {
+      "type": "string"
+    },
+    "settings.background_theme_pack": {
+      "type": "string"
+    },
+    "settings.style": {
+      "type": "string"
+    },
+    "settings.icon_pack": {
+      "type": "string"
+    },
+    "settings.center_text": {
+      "type": "string"
+    },
+    "settings.friendly_system_names": {
+      "type": "string"
+    },
+    "settings.font": {
+      "type": "string"
+    },
+    "settings.font_size": {
+      "type": "string"
+    },
+    "settings.general": {
+      "type": "string"
+    },
+    "settings.language": {
+      "type": "string"
+    },
+    "settings.brightness": {
+      "type": "string"
+    },
+    "settings.animations": {
+      "type": "string"
+    },
+    "settings.menu_sounds": {
+      "type": "string"
+    },
+    "settings.battery_colour_mode": {
+      "type": "string"
+    },
+    "settings.stock_battery_indicator": {
+      "type": "string"
+    },
+    "settings.background_images": {
+      "type": "string"
+    },
+    "settings.background_dim": {
+      "type": "string"
+    },
+    "settings.wallpaper": {
+      "type": "string"
+    },
+    "settings.background_image_fit": {
+      "type": "string"
+    },
+    "settings.hide_extensions": {
+      "type": "string"
+    },
+    "settings.hide_empty_folders": {
+      "type": "string"
+    },
+    "settings.custom_aspect_ratios": {
+      "type": "string"
+    },
+    "settings.library": {
+      "type": "string"
+    },
+    "settings.rom_source": {
+      "type": "string"
+    },
+    "settings.otg_storage": {
+      "type": "string"
+    },
+    "settings.game_switcher": {
+      "type": "string"
+    },
+    "settings.start_in_recents": {
+      "type": "string"
+    },
+    "settings.gameplay": {
+      "type": "string"
+    },
+    "settings.quick_resume": {
+      "type": "string"
+    },
+    "settings.autosave_autoload": {
+      "type": "string"
+    },
+    "settings.system": {
+      "type": "string"
+    },
+    "settings.volume": {
+      "type": "string"
+    },
+    "settings.file_cache": {
+      "type": "string"
+    },
+    "settings.rebuild_file_cache": {
+      "type": "string"
+    },
+    "settings.disable_sleep": {
+      "type": "string"
+    },
+    "settings.version": {
+      "type": "string"
+    },
+    "settings.button_mapping": {
+      "type": "string"
+    },
+    "settings.gamelist_scan_dir": {
+      "type": "string"
+    },
+    "settings.list_game_info": {
+      "type": "string"
+    },
+    "value.on": {
+      "type": "string"
+    },
+    "value.off": {
+      "type": "string"
+    },
+    "value.connected": {
+      "type": "string"
+    },
+    "value.not_connected": {
+      "type": "string"
+    },
+    "folder.settings": {
+      "type": "string"
+    },
+    "folder.recents": {
+      "type": "string"
+    },
+    "folder.favourites": {
+      "type": "string"
+    },
+    "header.button_mapping": {
+      "type": "string"
+    },
+    "header.select_core": {
+      "type": "string"
+    },
+    "header.search": {
+      "type": "string"
+    },
+    "header.add_extension": {
+      "type": "string"
+    },
+    "header.usb_mode": {
+      "type": "string"
+    },
+    "remap.skip": {
+      "type": "string"
+    },
+    "remap.press": {
+      "type": "string"
+    },
+    "remap.saved": {
+      "type": "string"
+    },
+    "remap.save_failed": {
+      "type": "string"
+    },
+    "button.up": {
+      "type": "string"
+    },
+    "button.down": {
+      "type": "string"
+    },
+    "button.left": {
+      "type": "string"
+    },
+    "button.right": {
+      "type": "string"
+    },
+    "picker.cores": {
+      "type": "string"
+    },
+    "picker.extensions": {
+      "type": "string"
+    },
+    "picker.filter_files": {
+      "type": "string"
+    },
+    "picker.add_extension": {
+      "type": "string"
+    },
+    "keyboard.ok_cancel": {
+      "type": "string"
+    },
+    "usb.initiated": {
+      "type": "string"
+    },
+    "usb.connect_instruction": {
+      "type": "string"
+    },
+    "usb.back": {
+      "type": "string"
+    },
+    "usb.connect_back": {
+      "type": "string"
+    },
+    "usb.ready": {
+      "type": "string"
+    },
+    "usb.transfer_warning": {
+      "type": "string"
+    },
+    "app.activity": {
+      "type": "string"
+    },
+    "app.frogshell": {
+      "type": "string"
+    },
+    "app.usb_mode": {
+      "type": "string"
+    },
+    "app.ebook_reader": {
+      "type": "string"
+    },
+    "app.image_viewer": {
+      "type": "string"
+    },
+    "app.videos": {
+      "type": "string"
+    },
+    "app.music_mp3": {
+      "type": "string"
+    },
+    "app.rockbox": {
+      "type": "string"
+    },
+    "app.shutdown": {
+      "type": "string"
+    },
+    "pico.menu.resume": {
+      "type": "string"
+    },
+    "pico.menu.save_state": {
+      "type": "string"
+    },
+    "pico.menu.load_state": {
+      "type": "string"
+    },
+    "pico.menu.disc_control": {
+      "type": "string"
+    },
+    "pico.menu.cheats": {
+      "type": "string"
+    },
+    "pico.menu.options": {
+      "type": "string"
+    },
+    "pico.menu.reset_game": {
+      "type": "string"
+    },
+    "pico.menu.load_new_game": {
+      "type": "string"
+    },
+    "pico.menu.exit": {
+      "type": "string"
+    },
+    "pico.options.audio_video": {
+      "type": "string"
+    },
+    "pico.options.emulator": {
+      "type": "string"
+    },
+    "pico.options.player_controls": {
+      "type": "string"
+    },
+    "pico.options.emulator_controls": {
+      "type": "string"
+    },
+    "pico.options.save_config": {
+      "type": "string"
+    },
+    "pico.video.show_fps": {
+      "type": "string"
+    },
+    "pico.video.show_cpu": {
+      "type": "string"
+    },
+    "pico.video.fast_forward": {
+      "type": "string"
+    },
+    "pico.video.rewind": {
+      "type": "string"
+    },
+    "pico.video.aspect_ratio": {
+      "type": "string"
+    },
+    "pico.video.filter": {
+      "type": "string"
+    },
+    "pico.video.optimize_text": {
+      "type": "string"
+    },
+    "pico.video.audio_buffer": {
+      "type": "string"
+    },
+    "pico.video.mono_output": {
+      "type": "string"
+    },
+    "pico.video.sharpness": {
+      "type": "string"
+    },
+    "pico.video.volume": {
+      "type": "string"
+    },
+    "pico.config.save_global": {
+      "type": "string"
+    },
+    "pico.config.save_game": {
+      "type": "string"
+    },
+    "pico.config.delete_game": {
+      "type": "string"
+    },
+    "pico.config.restore_defaults": {
+      "type": "string"
+    },
+    "pico.config.loaded_game": {
+      "type": "string"
+    },
+    "pico.config.loaded_global": {
+      "type": "string"
+    },
+    "pico.legend.back_ok": {
+      "type": "string"
+    },
+    "pico.control.up": {
+      "type": "string"
+    },
+    "pico.control.down": {
+      "type": "string"
+    },
+    "pico.control.left": {
+      "type": "string"
+    },
+    "pico.control.right": {
+      "type": "string"
+    },
+    "pico.control.a": {
+      "type": "string"
+    },
+    "pico.control.b": {
+      "type": "string"
+    },
+    "pico.control.x": {
+      "type": "string"
+    },
+    "pico.control.y": {
+      "type": "string"
+    },
+    "pico.control.start": {
+      "type": "string"
+    },
+    "pico.control.select": {
+      "type": "string"
+    },
+    "pico.control.l": {
+      "type": "string"
+    },
+    "pico.control.r": {
+      "type": "string"
+    },
+    "pico.control.l2": {
+      "type": "string"
+    },
+    "pico.control.r2": {
+      "type": "string"
+    },
+    "pico.emu.save_state": {
+      "type": "string"
+    },
+    "pico.emu.load_state": {
+      "type": "string"
+    },
+    "pico.emu.toggle_hud": {
+      "type": "string"
+    },
+    "pico.emu.fast_forward": {
+      "type": "string"
+    },
+    "system.a26": {
+      "type": "string"
+    },
+    "system.a5200": {
+      "type": "string"
+    },
+    "system.a78": {
+      "type": "string"
+    },
+    "system.a800": {
+      "type": "string"
+    },
+    "system.lnx": {
+      "type": "string"
+    },
+    "system.fc": {
+      "type": "string"
+    },
+    "system.nes": {
+      "type": "string"
+    },
+    "system.nesq": {
+      "type": "string"
+    },
+    "system.nest": {
+      "type": "string"
+    },
+    "system.fds": {
+      "type": "string"
+    },
+    "system.sfc": {
+      "type": "string"
+    },
+    "system.snes": {
+      "type": "string"
+    },
+    "system.snes02": {
+      "type": "string"
+    },
+    "system.gb": {
+      "type": "string"
+    },
+    "system.gbc": {
+      "type": "string"
+    },
+    "system.gbgb": {
+      "type": "string"
+    },
+    "system.gbb": {
+      "type": "string"
+    },
+    "system.dblcherrygb": {
+      "type": "string"
+    },
+    "system.gba": {
+      "type": "string"
+    },
+    "system.gbac": {
+      "type": "string"
+    },
+    "system.gbav": {
+      "type": "string"
+    },
+    "system.gbaf": {
+      "type": "string"
+    },
+    "system.mgba": {
+      "type": "string"
+    },
+    "system.md": {
+      "type": "string"
+    },
+    "system.sms": {
+      "type": "string"
+    },
+    "system.sega": {
+      "type": "string"
+    },
+    "system.gg": {
+      "type": "string"
+    },
+    "system.gpgx": {
+      "type": "string"
+    },
+    "system.segacd": {
+      "type": "string"
+    },
+    "system.32x": {
+      "type": "string"
+    },
+    "system.pce": {
+      "type": "string"
+    },
+    "system.pcesgx": {
+      "type": "string"
+    },
+    "system.ngpc": {
+      "type": "string"
+    },
+    "system.neogeo": {
+      "type": "string"
+    },
+    "system.geolith": {
+      "type": "string"
+    },
+    "system.wswan": {
+      "type": "string"
+    },
+    "system.wsv": {
+      "type": "string"
+    },
+    "system.vb": {
+      "type": "string"
+    },
+    "system.pcfx": {
+      "type": "string"
+    },
+    "system.ps": {
+      "type": "string"
+    },
+    "system.psx": {
+      "type": "string"
+    },
+    "system.ps1": {
+      "type": "string"
+    },
+    "system.ps1r": {
+      "type": "string"
+    },
+    "system.psp": {
+      "type": "string"
+    },
+    "system.arcade": {
+      "type": "string"
+    },
+    "system.m2k": {
+      "type": "string"
+    },
+    "system.cps1": {
+      "type": "string"
+    },
+    "system.cps2": {
+      "type": "string"
+    },
+    "system.cps3": {
+      "type": "string"
+    },
+    "system.c64": {
+      "type": "string"
+    },
+    "system.c64sc": {
+      "type": "string"
+    },
+    "system.c64f": {
+      "type": "string"
+    },
+    "system.c64fc": {
+      "type": "string"
+    },
+    "system.amiga": {
+      "type": "string"
+    },
+    "system.vic20": {
+      "type": "string"
+    },
+    "system.atari-st": {
+      "type": "string"
+    },
+    "system.msx": {
+      "type": "string"
+    },
+    "system.msx2": {
+      "type": "string"
+    },
+    "system.spec": {
+      "type": "string"
+    },
+    "system.zx": {
+      "type": "string"
+    },
+    "system.zx81": {
+      "type": "string"
+    },
+    "system.col": {
+      "type": "string"
+    },
+    "system.amstrad": {
+      "type": "string"
+    },
+    "system.amstradb": {
+      "type": "string"
+    },
+    "system.thom": {
+      "type": "string"
+    },
+    "system.xmil": {
+      "type": "string"
+    },
+    "system.pico286": {
+      "type": "string"
+    },
+    "system.j2me": {
+      "type": "string"
+    },
+    "system.dos": {
+      "type": "string"
+    },
+    "system.prboom": {
+      "type": "string"
+    },
+    "system.doom": {
+      "type": "string"
+    },
+    "system.quake": {
+      "type": "string"
+    },
+    "system.quake2": {
+      "type": "string"
+    },
+    "system.wolf3d": {
+      "type": "string"
+    },
+    "system.outrun": {
+      "type": "string"
+    },
+    "system.cavestory": {
+      "type": "string"
+    },
+    "system.flashback": {
+      "type": "string"
+    },
+    "system.xrick": {
+      "type": "string"
+    },
+    "system.jnb": {
+      "type": "string"
+    },
+    "system.gw": {
+      "type": "string"
+    },
+    "system.tic80": {
+      "type": "string"
+    },
+    "system.pico8": {
+      "type": "string"
+    },
+    "system.fake08": {
+      "type": "string"
+    },
+    "system.retro8": {
+      "type": "string"
+    },
+    "system.lowres-nx": {
+      "type": "string"
+    },
+    "system.pokem": {
+      "type": "string"
+    },
+    "system.int": {
+      "type": "string"
+    },
+    "system.fcf": {
+      "type": "string"
+    },
+    "system.cdg": {
+      "type": "string"
+    },
+    "system.chip8": {
+      "type": "string"
+    },
+    "system.arduboy": {
+      "type": "string"
+    },
+    "system.arduous": {
+      "type": "string"
+    },
+    "system.vec": {
+      "type": "string"
+    },
+    "system.o2em": {
+      "type": "string"
+    },
+    "system.gme": {
+      "type": "string"
+    },
+    "system.gong": {
+      "type": "string"
+    },
+    "system.vapor": {
+      "type": "string"
+    },
+    "system.rockbox": {
+      "type": "string"
+    },
+    "system.music": {
+      "type": "string"
+    },
+    "system.audio": {
+      "type": "string"
+    },
+    "system.videos": {
+      "type": "string"
+    },
+    "system.video": {
+      "type": "string"
+    },
+    "system.images": {
+      "type": "string"
+    },
+    "system.photos": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "_default.font_name",
+    "language.en_US",
+    "language.pl_PL",
+    "language.es_ES",
+    "language.pt_BR",
+    "language.ja_JP",
+    "language.ru_RU",
+    "language.zh_CN",
+    "language.ar_MS",
+    "language.it_IT",
+    "language.fr_FR",
+    "language.de_DE",
+    "language.tr_TR",
+    "tab.recents",
+    "tab.games",
+    "tab.apps",
+    "tab.settings",
+    "legend.enter_back",
+    "legend.favourite",
+    "legend.unfavourite",
+    "legend.options",
+    "legend.search",
+    "settings.appearance",
+    "settings.theme",
+    "settings.background_theme_pack",
+    "settings.style",
+    "settings.icon_pack",
+    "settings.center_text",
+    "settings.friendly_system_names",
+    "settings.font",
+    "settings.font_size",
+    "settings.general",
+    "settings.language",
+    "settings.brightness",
+    "settings.animations",
+    "settings.menu_sounds",
+    "settings.battery_colour_mode",
+    "settings.stock_battery_indicator",
+    "settings.background_images",
+    "settings.background_dim",
+    "settings.wallpaper",
+    "settings.background_image_fit",
+    "settings.hide_extensions",
+    "settings.hide_empty_folders",
+    "settings.custom_aspect_ratios",
+    "settings.library",
+    "settings.rom_source",
+    "settings.otg_storage",
+    "settings.game_switcher",
+    "settings.start_in_recents",
+    "settings.gameplay",
+    "settings.quick_resume",
+    "settings.autosave_autoload",
+    "settings.system",
+    "settings.volume",
+    "settings.file_cache",
+    "settings.rebuild_file_cache",
+    "settings.disable_sleep",
+    "settings.version",
+    "settings.button_mapping",
+    "settings.gamelist_scan_dir",
+    "settings.list_game_info",
+    "value.on",
+    "value.off",
+    "value.connected",
+    "value.not_connected",
+    "folder.settings",
+    "folder.recents",
+    "folder.favourites",
+    "header.button_mapping",
+    "header.select_core",
+    "header.search",
+    "header.add_extension",
+    "header.usb_mode",
+    "remap.skip",
+    "remap.press",
+    "remap.saved",
+    "remap.save_failed",
+    "button.up",
+    "button.down",
+    "button.left",
+    "button.right",
+    "picker.cores",
+    "picker.extensions",
+    "picker.filter_files",
+    "picker.add_extension",
+    "keyboard.ok_cancel",
+    "usb.initiated",
+    "usb.connect_instruction",
+    "usb.back",
+    "usb.connect_back",
+    "usb.ready",
+    "usb.transfer_warning",
+    "app.activity",
+    "app.frogshell",
+    "app.usb_mode",
+    "app.ebook_reader",
+    "app.image_viewer",
+    "app.videos",
+    "app.music_mp3",
+    "app.rockbox",
+    "app.shutdown",
+    "pico.menu.resume",
+    "pico.menu.save_state",
+    "pico.menu.load_state",
+    "pico.menu.disc_control",
+    "pico.menu.cheats",
+    "pico.menu.options",
+    "pico.menu.reset_game",
+    "pico.menu.load_new_game",
+    "pico.menu.exit",
+    "pico.options.audio_video",
+    "pico.options.emulator",
+    "pico.options.player_controls",
+    "pico.options.emulator_controls",
+    "pico.options.save_config",
+    "pico.video.show_fps",
+    "pico.video.show_cpu",
+    "pico.video.fast_forward",
+    "pico.video.rewind",
+    "pico.video.aspect_ratio",
+    "pico.video.filter",
+    "pico.video.optimize_text",
+    "pico.video.audio_buffer",
+    "pico.video.mono_output",
+    "pico.video.sharpness",
+    "pico.video.volume",
+    "pico.config.save_global",
+    "pico.config.save_game",
+    "pico.config.delete_game",
+    "pico.config.restore_defaults",
+    "pico.config.loaded_game",
+    "pico.config.loaded_global",
+    "pico.legend.back_ok",
+    "pico.control.up",
+    "pico.control.down",
+    "pico.control.left",
+    "pico.control.right",
+    "pico.control.a",
+    "pico.control.b",
+    "pico.control.x",
+    "pico.control.y",
+    "pico.control.start",
+    "pico.control.select",
+    "pico.control.l",
+    "pico.control.r",
+    "pico.control.l2",
+    "pico.control.r2",
+    "pico.emu.save_state",
+    "pico.emu.load_state",
+    "pico.emu.toggle_hud",
+    "pico.emu.fast_forward",
+    "system.a26",
+    "system.a5200",
+    "system.a78",
+    "system.a800",
+    "system.lnx",
+    "system.fc",
+    "system.nes",
+    "system.nesq",
+    "system.nest",
+    "system.fds",
+    "system.sfc",
+    "system.snes",
+    "system.snes02",
+    "system.gb",
+    "system.gbc",
+    "system.gbgb",
+    "system.gbb",
+    "system.dblcherrygb",
+    "system.gba",
+    "system.gbac",
+    "system.gbav",
+    "system.gbaf",
+    "system.mgba",
+    "system.md",
+    "system.sms",
+    "system.sega",
+    "system.gg",
+    "system.gpgx",
+    "system.segacd",
+    "system.32x",
+    "system.pce",
+    "system.pcesgx",
+    "system.ngpc",
+    "system.neogeo",
+    "system.geolith",
+    "system.wswan",
+    "system.wsv",
+    "system.vb",
+    "system.pcfx",
+    "system.ps",
+    "system.psx",
+    "system.ps1",
+    "system.ps1r",
+    "system.psp",
+    "system.arcade",
+    "system.m2k",
+    "system.cps1",
+    "system.cps2",
+    "system.cps3",
+    "system.c64",
+    "system.c64sc",
+    "system.c64f",
+    "system.c64fc",
+    "system.amiga",
+    "system.vic20",
+    "system.atari-st",
+    "system.msx",
+    "system.msx2",
+    "system.spec",
+    "system.zx",
+    "system.zx81",
+    "system.col",
+    "system.amstrad",
+    "system.amstradb",
+    "system.thom",
+    "system.xmil",
+    "system.pico286",
+    "system.j2me",
+    "system.dos",
+    "system.prboom",
+    "system.doom",
+    "system.quake",
+    "system.quake2",
+    "system.wolf3d",
+    "system.outrun",
+    "system.cavestory",
+    "system.flashback",
+    "system.xrick",
+    "system.jnb",
+    "system.gw",
+    "system.tic80",
+    "system.pico8",
+    "system.fake08",
+    "system.retro8",
+    "system.lowres-nx",
+    "system.pokem",
+    "system.int",
+    "system.fcf",
+    "system.cdg",
+    "system.chip8",
+    "system.arduboy",
+    "system.arduous",
+    "system.vec",
+    "system.o2em",
+    "system.gme",
+    "system.gong",
+    "system.vapor",
+    "system.rockbox",
+    "system.music",
+    "system.audio",
+    "system.videos",
+    "system.video",
+    "system.images",
+    "system.photos"
+  ],
+  "additionalProperties": false
+}

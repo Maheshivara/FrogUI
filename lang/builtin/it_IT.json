@@ -1,4 +1,5 @@
 {
+  "$schema": "./_schema.json",
   "_default.font_name": "alium_Nunito.ttf",
   "language.en_US": "English (US)",
   "language.pl_PL": "Polski",
@@ -59,6 +60,8 @@
   "settings.disable_sleep": "Disattiva sospensione (riavvio)",
   "settings.version": "Versione TreeFrogUI",
   "settings.button_mapping": "Mappatura pulsanti",
+  "settings.gamelist_scan_dir": "Mostra tutti i giochi",
+  "settings.list_game_info": "Mostra informazioni sui giochi",
   "value.on": "Attiva",
   "value.off": "Disattiva",
   "value.connected": "Connesso",

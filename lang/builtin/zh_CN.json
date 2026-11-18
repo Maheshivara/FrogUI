@@ -1,4 +1,6 @@
 {
+  "$schema": "./_schema.json",
+  "_default.font_name": "TreeFrogUnicode.ttf",
   "language.en_US": "English (US)",
   "language.pl_PL": "Polski",
   "language.es_ES": "Español",
@@ -6,118 +8,150 @@
   "language.ja_JP": "日本語",
   "language.ru_RU": "Русский",
   "language.zh_CN": "简体中文",
+  "language.ar_MS": "Arabic",
+  "language.it_IT": "Italiano",
+  "language.fr_FR": "Français",
   "language.de_DE": "Deutsch",
   "language.tr_TR": "Türkçe",
-  "tab.recents": "RECENTS",
-  "tab.games": "GAMES",
-  "tab.apps": "APPS",
-  "tab.settings": "SETTINGS",
-  "legend.enter_back": " A-ENTER  B-BACK ",
-  "legend.favourite": " Y-FAV ",
-  "legend.unfavourite": " Y-UNFAV ",
-  "legend.options": " SEL-OPTIONS ",
-  "legend.search": " X-SEARCH ",
-  "settings.appearance": "APPEARANCE",
-  "settings.theme": "Theme",
-  "settings.background_theme_pack": "Background Theme Pack",
-  "settings.style": "Style",
-  "settings.icon_pack": "Icon Pack",
-  "settings.center_text": "Center Text",
-  "settings.friendly_system_names": "Friendly System Names",
-  "settings.font": "Font",
+  "tab.recents": "最近",
+  "tab.games": "游戏",
+  "tab.apps": "应用",
+  "tab.settings": "设置",
+  "legend.enter_back": " A-确认  B-返回 ",
+  "legend.favourite": " Y-收藏 ",
+  "legend.unfavourite": " Y-取消收藏 ",
+  "legend.options": " SEL-选项 ",
+  "legend.search": " X-搜索 ",
+  "settings.appearance": "外观",
+  "settings.theme": "主题",
+  "settings.background_theme_pack": "背景主题包",
+  "settings.style": "样式",
+  "settings.icon_pack": "图标包",
+  "settings.center_text": "居中文本",
+  "settings.friendly_system_names": "友好系统名称",
+  "settings.font": "字体",
   "settings.font_size": "字体大小",
-  "settings.general": "GENERAL",
-  "settings.language": "Language",
-  "settings.brightness": "Brightness",
-  "settings.animations": "Animations",
-  "settings.menu_sounds": "Menu Sounds",
-  "settings.battery_colour_mode": "Battery Colour Mode",
-  "settings.background_images": "Background Images",
-  "settings.background_dim": "Background Dim",
-  "settings.wallpaper": "Wallpaper",
-  "settings.background_image_fit": "Background Image Fit",
-  "settings.hide_extensions": "Hide Extensions",
-  "settings.hide_empty_folders": "Hide Empty Folders",
-  "settings.library": "LIBRARY",
-  "settings.rom_source": "ROM Source",
-  "settings.otg_storage": "OTG Storage",
-  "settings.game_switcher": "Game Switcher",
-  "settings.start_in_recents": "Start in Recents",
-  "settings.gameplay": "GAMEPLAY",
-  "settings.quick_resume": "Quick Resume",
-  "settings.autosave_autoload": "Auto-Save/Auto-Load",
-  "settings.system": "SYSTEM",
-  "settings.volume": "Volume",
-  "settings.file_cache": "File Cache",
-  "settings.rebuild_file_cache": "Rebuild File Cache",
-  "settings.disable_sleep": "Disable Sleep (restart)",
-  "settings.version": "TreeFrogUI Version",
-  "settings.button_mapping": "Button Mapping",
-  "value.on": "on",
-  "value.off": "off",
-  "value.connected": "connected",
-  "value.not_connected": "not connected",
-  "folder.settings": "Settings",
-  "folder.recents": "Recent Games",
-  "folder.favourites": "Favourites"
-  ,"header.button_mapping": "BUTTON MAPPING"
-  ,"header.select_core": "SELECT CORE"
-  ,"header.search": "SEARCH"
-  ,"header.add_extension": "ADD EXTENSION"
-  ,"header.usb_mode": "USB MODE"
-  ,"remap.skip": "[B] = skip / keep default"
-  ,"picker.cores": "Cores"
-  ,"picker.extensions": "EXTENSIONS"
-  ,"picker.filter_files": "Filter files"
-  ,"picker.add_extension": "Add extension..."
-  ,"keyboard.ok_cancel": "A OK   B cancel"
-  ,"usb.initiated": "USB MTP INITIATED"
-  ,"usb.connect_instruction": "Connect the console to a PC over USB-C"
-  ,"usb.back": "B  BACK"
-  ,"usb.connect_back": "A  CONNECT   B  BACK"
-  ,"usb.ready": "USB MTP READY"
-  ,"usb.transfer_warning": "Do not disconnect while files are transferring"
-  ,"app.activity": "Activity Tracker"
-  ,"app.frogshell": "FrogShell"
-  ,"app.usb_mode": "USB mode"
-  ,"app.ebook_reader": "Ebook Reader"
-  ,"app.image_viewer": "Image Viewer"
-  ,"app.videos": "Videos"
-  ,"app.music_mp3": "Music / MP3"
-  ,"app.rockbox": "Rockbox"
-  ,"app.shutdown": "关机"
-  ,"pico.menu.resume": "Resume game"
-  ,"pico.menu.save_state": "Save state"
-  ,"pico.menu.load_state": "Load state"
-  ,"pico.menu.disc_control": "Disc control"
-  ,"pico.menu.cheats": "Cheats"
-  ,"pico.menu.options": "Options"
-  ,"pico.menu.reset_game": "Reset game"
-  ,"pico.menu.load_new_game": "Load new game"
-  ,"pico.menu.exit": "Exit"
-  ,"pico.options.audio_video": "Audio and video"
-  ,"pico.options.emulator": "Emulator options"
-  ,"pico.options.player_controls": "Player controls"
-  ,"pico.options.emulator_controls": "Emulator controls"
-  ,"pico.options.save_config": "Save config"
-  ,"pico.video.show_fps": "Show FPS"
-  ,"pico.video.show_cpu": "Show CPU %"
-  ,"pico.video.fast_forward": "Fast forward (SELECT+R1)"
-  ,"pico.video.rewind": "Rewind (hold SELECT+B)"
-  ,"pico.video.aspect_ratio": "Aspect ratio"
-  ,"pico.video.filter": "Filter"
-  ,"pico.video.optimize_text": "Optimize text"
-  ,"pico.video.audio_buffer": "Audio buffer"
-  ,"pico.video.mono_output": "Mono output"
-  ,"pico.video.sharpness": "Sharpness"
-  ,"pico.video.volume": "Volume %"
-  ,"pico.config.save_global": "Save global config"
-  ,"pico.config.save_game": "Save game config"
-  ,"pico.config.delete_game": "Delete game config"
-  ,"pico.config.restore_defaults": "Restore defaults"
-  ,"pico.config.loaded_game": "Loaded: game config"
-  ,"pico.config.loaded_global": "Loaded: global config"
-  ,"pico.legend.back_ok": "B-BACK   A-OKAY",
+  "settings.general": "常规",
+  "settings.language": "语言",
+  "settings.brightness": "亮度",
+  "settings.animations": "动画",
+  "settings.menu_sounds": "菜单声音",
+  "settings.battery_colour_mode": "电池颜色模式",
+  "settings.stock_battery_indicator": "原厂电池指示器",
+  "settings.background_images": "背景图片",
+  "settings.background_dim": "背景变暗",
+  "settings.wallpaper": "壁纸",
+  "settings.background_image_fit": "背景图片适应",
+  "settings.hide_extensions": "隐藏扩展名",
+  "settings.hide_empty_folders": "隐藏空文件夹",
+  "settings.custom_aspect_ratios": "所有宽高比",
+  "settings.library": "游戏库",
+  "settings.rom_source": "ROM 来源",
+  "settings.otg_storage": "OTG 存储",
+  "settings.game_switcher": "游戏切换器",
+  "settings.start_in_recents": "在最近游戏中启动",
+  "settings.gameplay": "游玩",
+  "settings.quick_resume": "快速恢复",
+  "settings.autosave_autoload": "自动保存/自动加载",
+  "settings.system": "系统",
+  "settings.volume": "音量",
+  "settings.file_cache": "文件缓存",
+  "settings.rebuild_file_cache": "重建文件缓存",
+  "settings.disable_sleep": "禁用休眠（需重启）",
+  "settings.version": "TreeFrogUI 版本",
+  "settings.button_mapping": "按键映射",
+  "settings.gamelist_scan_dir": "显示所有游戏",
+  "settings.list_game_info": "显示游戏信息",
+  "value.on": "开",
+  "value.off": "关",
+  "value.connected": "已连接",
+  "value.not_connected": "未连接",
+  "folder.settings": "设置",
+  "folder.recents": "最近游戏",
+  "folder.favourites": "收藏",
+  "header.button_mapping": "按键映射",
+  "header.select_core": "选择核心",
+  "header.search": "搜索",
+  "header.add_extension": "添加扩展名",
+  "header.usb_mode": "USB 模式",
+  "remap.skip": "[B] = 跳过 / 保持默认",
+  "remap.press": "按  %s  (%d / %d)",
+  "remap.saved": "按键映射已保存",
+  "remap.save_failed": "无法保存按键映射",
+  "button.up": "上",
+  "button.down": "下",
+  "button.left": "左",
+  "button.right": "右",
+  "picker.cores": "核心",
+  "picker.extensions": "扩展名",
+  "picker.filter_files": "筛选文件",
+  "picker.add_extension": "添加扩展名...",
+  "keyboard.ok_cancel": "A 确认   B 取消",
+  "usb.initiated": "USB MTP 已启动",
+  "usb.connect_instruction": "通过 USB-C 将控制台连接到 PC",
+  "usb.back": "B  返回",
+  "usb.connect_back": "A  连接   B  返回",
+  "usb.ready": "USB MTP 就绪",
+  "usb.transfer_warning": "传输文件时请勿断开连接",
+  "app.activity": "活动追踪器",
+  "app.frogshell": "FrogShell",
+  "app.usb_mode": "USB 模式",
+  "app.ebook_reader": "电子书阅读器",
+  "app.image_viewer": "图片查看器",
+  "app.videos": "视频",
+  "app.music_mp3": "音乐 / MP3",
+  "app.rockbox": "Rockbox",
+  "app.shutdown": "关机",
+  "pico.menu.resume": "恢复游戏",
+  "pico.menu.save_state": "保存状态",
+  "pico.menu.load_state": "加载状态",
+  "pico.menu.disc_control": "光盘控制",
+  "pico.menu.cheats": "金手指",
+  "pico.menu.options": "选项",
+  "pico.menu.reset_game": "重置游戏",
+  "pico.menu.load_new_game": "加载新游戏",
+  "pico.menu.exit": "退出",
+  "pico.options.audio_video": "音频和视频",
+  "pico.options.emulator": "模拟器选项",
+  "pico.options.player_controls": "玩家控制",
+  "pico.options.emulator_controls": "模拟器控制",
+  "pico.options.save_config": "保存配置",
+  "pico.video.show_fps": "显示 FPS",
+  "pico.video.show_cpu": "显示 CPU %",
+  "pico.video.fast_forward": "快进 (SELECT+R1)",
+  "pico.video.rewind": "倒带 (按住 SELECT+B)",
+  "pico.video.aspect_ratio": "宽高比",
+  "pico.video.filter": "滤镜",
+  "pico.video.optimize_text": "优化文本",
+  "pico.video.audio_buffer": "音频缓冲区",
+  "pico.video.mono_output": "单声道输出",
+  "pico.video.sharpness": "锐度",
+  "pico.video.volume": "音量 %",
+  "pico.config.save_global": "保存全局配置",
+  "pico.config.save_game": "保存游戏配置",
+  "pico.config.delete_game": "删除游戏配置",
+  "pico.config.restore_defaults": "恢复默认值",
+  "pico.config.loaded_game": "已加载: 游戏配置",
+  "pico.config.loaded_global": "已加载: 全局配置",
+  "pico.legend.back_ok": "B-返回   A-确认",
+  "pico.control.up": "上",
+  "pico.control.down": "下",
+  "pico.control.left": "左",
+  "pico.control.right": "右",
+  "pico.control.a": "A 键",
+  "pico.control.b": "B 键",
+  "pico.control.x": "X 键",
+  "pico.control.y": "Y 键",
+  "pico.control.start": "START",
+  "pico.control.select": "SELECT",
+  "pico.control.l": "L 键",
+  "pico.control.r": "R 键",
+  "pico.control.l2": "L2 键",
+  "pico.control.r2": "R2 键",
+  "pico.emu.save_state": "保存状态",
+  "pico.emu.load_state": "加载状态",
+  "pico.emu.toggle_hud": "切换 FPS/CPU%",
+  "pico.emu.fast_forward": "切换快进",
   "system.a26": "Atari 2600",
   "system.a5200": "Atari 5200",
   "system.a78": "Atari 7800",

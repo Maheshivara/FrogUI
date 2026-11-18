@@ -1,4 +1,5 @@
 {
+  "$schema": "./_schema.json",
   "_default.font_name": "alium_Nunito.ttf",
   "language.en_US": "İngilizce (ABD)",
   "language.pl_PL": "Lehçe",
@@ -59,6 +60,8 @@
   "settings.disable_sleep": "Uyku modunu kapat (Yeniden başlat)",
   "settings.version": "TreeFrogUI Sürümü",
   "settings.button_mapping": "Düğme eşleme",
+  "settings.gamelist_scan_dir": "Tüm Oyunları Göster",
+  "settings.list_game_info": "Oyun Bilgilerini Göster",
   "value.on": "Açık",
   "value.off": "Kapalı",
   "value.connected": "Bağlı",
