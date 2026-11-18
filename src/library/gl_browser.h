@@ -9,9 +9,9 @@
 #ifndef GL_BROWSER_H
 #define GL_BROWSER_H
 
+#include "gamelist.h"
 #include <stdbool.h>
 #include <stddef.h>
-#include "gamelist.h"
 
 /* (Re)load <sys_root>/gamelist.xml if it changed on disk (mtime+size).
  * Does a stat(): call it once per directory scan, NOT per frame.

@@ -1,9 +1,4 @@
-/* game_panel.c - browser side panel: box art + (optional) gamelist info.
- *
- * Right portion of the list view (Onion/muOS style). With "list_info" on and a
- * gamelist entry available, the art takes the top ~45% and the title, a
- * one-line summary and the word-wrapped description fill the rest. */
-#include "app.h"
+#include "../app/app.h"
 
 /* Greedy word wrap into at most `max_lines` lines of width `w` px. The last
  * line gets ".." when text remains. Returns the y below the last line drawn. */

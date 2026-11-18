@@ -1,7 +1,5 @@
-/* gamelist_ui.c - gamelist.xml support for the browser: listing, titles,
- * artwork and info. Depends on gl_browser (cache/lookup) and gamelist (parser). */
-#include "app.h"
-#include "stb_image.h"
+#include "../app/app.h"
+#include "../vendor/stb_image.h"
 
 bool gamelist_root_for(const char *path, char *out, size_t n) {
   if (!path || strcmp(path, ROMS_PATH) == 0)
@@ -38,8 +36,12 @@ void gamelist_fill_dir(const char *root, const char *path) {
 }
 
 bool gamelist_is_media_dir(const char *n) {
-  static const char *skip[] = {"media",  "images",          "videos",
-                               "manuals", "downloaded_images", "downloaded_media",
+  static const char *skip[] = {"media",
+                               "images",
+                               "videos",
+                               "manuals",
+                               "downloaded_images",
+                               "downloaded_media",
                                NULL};
   for (int i = 0; skip[i]; i++)
     if (strcasecmp(n, skip[i]) == 0)
@@ -72,10 +74,17 @@ bool load_thumbnail_file(const char *path, Thumbnail *tb) {
     return false;
   int dw = w, dh = h;
   if (w > GL_THUMB_MAX || h > GL_THUMB_MAX) {
-    if (w >= h) { dw = GL_THUMB_MAX; dh = h * GL_THUMB_MAX / w; }
-    else        { dh = GL_THUMB_MAX; dw = w * GL_THUMB_MAX / h; }
-    if (dh < 1) dh = 1;
-    if (dw < 1) dw = 1;
+    if (w >= h) {
+      dw = GL_THUMB_MAX;
+      dh = h * GL_THUMB_MAX / w;
+    } else {
+      dh = GL_THUMB_MAX;
+      dw = w * GL_THUMB_MAX / h;
+    }
+    if (dh < 1)
+      dh = 1;
+    if (dw < 1)
+      dw = 1;
   }
   uint16_t *data = (uint16_t *)malloc((size_t)dw * dh * sizeof(uint16_t));
   uint8_t *alpha = (uint8_t *)malloc((size_t)dw * dh);

@@ -1,4 +1,4 @@
-#include "app.h"
+#include "../app/app.h"
 
 /* internal helpers */
 static void render_activity_graph(uint16_t *fb);

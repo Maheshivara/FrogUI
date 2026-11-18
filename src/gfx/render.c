@@ -1,7 +1,7 @@
 #include "render.h"
-#include "common/i18n.h"
+#include "../common/i18n.h"
+#include "../vendor/stb_image.h" /* decls only; impl lives in banner.c */
 #include "font.h"
-#include "stb_image.h" /* decls only; impl lives in banner.c */
 #include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>

@@ -1,4 +1,4 @@
-#include "app.h"
+#include "../app/app.h"
 int app_def_count(void);
 
 const AppEntry app_defs[] = {

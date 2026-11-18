@@ -1,12 +1,3 @@
-/*
- * frogui_libretro.c - FrogUI as a libretro core for SF3000
- *
- * Picoarch loads this core and handles ALL display/input/SDL init.
- * FrogUI renders its menu into a RGB565 buffer and passes it to video_cb.
- * When user picks a game, write /tmp/frogui_launch.txt and signal SHUTDOWN.
- * icube reads that file and launches picoarch with the real game core.
- */
-
 #include <dirent.h>
 #include <fcntl.h>
 #include <linux/fb.h>
@@ -23,23 +14,23 @@
 #include <time.h>
 #include <unistd.h>
 
-#include "app.h"
-#include "backlight.h"
-#include "banner.h"
-#include "battery.h"
+#include "app/app.h"
+#include "app/debug.h"
+#include "app/frogui_config.h"
 #include "common/i18n.h"
-#include "core_map.h"
-#include "core_override.h"
-#include "debug.h"
-#include "ext_filter.h"
-#include "favorites.h"
-#include "font.h"
-#include "frogui_config.h"
-#include "input.h"
-#include "libretro.h"
-#include "recent_games.h"
-#include "render.h"
-#include "theme.h"
+#include "gfx/banner.h"
+#include "gfx/font.h"
+#include "gfx/render.h"
+#include "gfx/theme.h"
+#include "library/core_map.h"
+#include "library/core_override.h"
+#include "library/ext_filter.h"
+#include "library/favorites.h"
+#include "library/recent_games.h"
+#include "platform/backlight.h"
+#include "platform/battery.h"
+#include "platform/input.h"
+#include "vendor/libretro.h"
 
 /* Libretro callbacks */
 static retro_video_refresh_t video_cb = NULL;

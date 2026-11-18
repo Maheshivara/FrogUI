@@ -1,8 +1,8 @@
 /* debug.c - opt-in diagnostics log and monotonic clock. */
+#include "debug.h"
 #include <stdio.h>
 #include <time.h>
 #include <unistd.h>
-#include "debug.h"
 
 void dbg(const char *msg) {
   /* Mirror zhijack's opt-in diagnostics convention.  Writing every UI

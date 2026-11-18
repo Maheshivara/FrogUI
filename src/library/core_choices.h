@@ -1,7 +1,7 @@
 #ifndef CORE_CHOICES_H
 #define CORE_CHOICES_H
 
-#include "app_common.h"
+#include "../app/app_common.h"
 
 /* --- Available cores for the per-game / per-folder core picker ---
  * Deduped list built from console_mappings. Index 0 = "Default (auto)"

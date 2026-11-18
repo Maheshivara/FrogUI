@@ -128,8 +128,8 @@ const Game *gl_lookup(const char *sys_root, const char *full_path) {
   if (!gl.ok)
     return NULL;
   GlKey probe = {rel_key(sys_root, full_path), NULL};
-  GlKey *hit = (GlKey *)bsearch(&probe, gl.keys, gl.nkeys, sizeof(GlKey),
-                                key_cmp);
+  GlKey *hit =
+      (GlKey *)bsearch(&probe, gl.keys, gl.nkeys, sizeof(GlKey), key_cmp);
   return hit ? hit->game : NULL;
 }
 

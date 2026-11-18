@@ -1,5 +1,5 @@
-#include "app.h"
-#include "stb_image.h"
+#include "../app/app.h"
+#include "../vendor/stb_image.h"
 
 /* internal helpers */
 static float system_carousel_ease(void);

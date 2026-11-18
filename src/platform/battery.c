@@ -1,4 +1,7 @@
-/* battery.c - battery ADC readout and the fb1 (cubevol overlay) housekeeping. */
+/* battery.c - battery ADC readout and the fb1 (cubevol overlay) housekeeping.
+ */
+#include "battery.h"
+#include "../gfx/render.h"
 #include <fcntl.h>
 #include <linux/fb.h>
 #include <stdio.h>
@@ -6,8 +9,8 @@
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 #include <unistd.h>
-#include "battery.h"
-#include "render.h"
+
+int min(int a, int b) { return (a < b) ? a : b; }
 
 /* Hide cubevol's battery glyph while leaving its centered volume popup intact.
  * fb1 is rotated and/or double-buffered on SF3500-class devices, so physical

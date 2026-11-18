@@ -1,5 +1,5 @@
-#include "app.h"
-#include "stb_image.h"
+#include "../app/app.h"
+#include "../vendor/stb_image.h"
 
 /* internal helpers */
 static int switcher_savestate_bmp(const char *full_path, char *out, size_t n);

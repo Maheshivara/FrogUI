@@ -1,8 +1,8 @@
 #ifndef CORE_PICKER_H
 #define CORE_PICKER_H
 
-#include "app_common.h"
-#include "app_state.h"
+#include "../app/app_common.h"
+#include "../app/app_state.h"
 
 /* Rows the picker actually draws: one VISIBLE_ENTRIES slot is used by the
  * subtitle (see render_core_picker), so scroll math must match or the cursor

@@ -14,9 +14,9 @@
 /* Maximum folders with a stored whitelist. */
 #define EXT_FILTER_MAX_FOLDERS 64
 /* Max extensions per folder. */
-#define EXT_FILTER_MAX_EXTS    16
+#define EXT_FILTER_MAX_EXTS 16
 /* Max chars per extension (without dot). */
-#define EXT_FILTER_EXT_LEN     8
+#define EXT_FILTER_EXT_LEN 8
 
 /* Load persisted filters from /mnt/sdcard/frogui/ext_filters.txt, applying
  * the built-in PS1 defaults first (a stored line overrides the default list
@@ -45,9 +45,10 @@ bool ext_filter_get_enabled(const char *folder_name);
 
 /* Per-extension queries used by the picker UI. */
 bool ext_filter_has_ext(const char *folder_name, const char *ext);
-int  ext_filter_ext_count(const char *folder_name);
+int ext_filter_ext_count(const char *folder_name);
 /* Copy extension #idx (lowercase, no dot) into out. Returns 0 if absent. */
-int  ext_filter_get_ext_at(const char *folder_name, int idx, char *out, size_t n);
+int ext_filter_get_ext_at(const char *folder_name, int idx, char *out,
+                          size_t n);
 
 /* Add/remove an extension (no dot) from the folder's list. Returns true if
  * the list changed. Adding to an empty list enables the filter. */

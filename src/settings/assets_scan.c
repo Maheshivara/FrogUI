@@ -1,4 +1,4 @@
-#include "app.h"
+#include "../app/app.h"
 
 /* internal helpers */
 static int font_has_ext(const char *name);

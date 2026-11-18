@@ -1,5 +1,5 @@
 #include "font.h"
-#include "common/i18n.h"
+#include "../common/i18n.h"
 
 #include <stdint.h>
 #include <stdio.h>
@@ -572,8 +572,8 @@ void font_draw_text_ex(uint16_t *framebuffer, int screen_width,
 
 void font_draw_text(uint16_t *framebuffer, int screen_width, int screen_height,
                     int x, int y, const char *text, uint16_t color) {
-  font_draw_text_ex(framebuffer, screen_width, screen_height, x, y, text,
-                    color, 0);
+  font_draw_text_ex(framebuffer, screen_width, screen_height, x, y, text, color,
+                    0);
 }
 
 int font_measure_text_ex(const char *text, int is_bold) {

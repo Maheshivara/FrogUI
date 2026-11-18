@@ -1,8 +1,8 @@
 #ifndef DIR_CACHE_H
 #define DIR_CACHE_H
 
-#include "app_common.h"
-#include "settings.h"
+#include "../app/app_common.h"
+#include "../settings/settings.h"
 
 /* ---- Folder listing cache (OnionOS-style, defensive) ----------------------
  * Skip the readdir + per-folder empty-check + sort on a repeat visit when the
@@ -15,7 +15,7 @@
  * off. */
 #define CACHE_DIR SETTINGS_DIR "/.cache"
 #define CACHE_MAGIC                                                            \
-  0x33435546u                    /* "FUC3" — bumped when the listing content   \
+  0x33435546u                    /* "FUC3" — bumped when the listing content \
                                   * changes WITHOUT the dir mtime moving       \
                                   * (e.g. extension-whitelist edits). */
 #define CACHE_MAX_ENTRIES 100000 /* sanity cap to reject a corrupt count */

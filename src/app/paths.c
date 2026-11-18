@@ -1,7 +1,7 @@
 /* paths.c - roms-root state and path helpers. */
+#include "paths.h"
 #include <string.h>
 #include <strings.h>
-#include "paths.h"
 
 char g_roms_path[512] = ROMS_PATH_DEFAULT;
 

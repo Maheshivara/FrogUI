@@ -1,9 +1,8 @@
 #ifndef VIEW_ACTIVITY_H
 #define VIEW_ACTIVITY_H
 
-#include "app_common.h"
-#include "app_state.h"
-
+#include "../app/app_common.h"
+#include "../app/app_state.h"
 
 extern char activity_paths[128][MAX_PATH_LEN];
 extern long activity_seconds[128];

@@ -4,7 +4,6 @@
 #include "app_common.h"
 #include "app_state.h"
 
-
 extern int apps_tab_selected;
 extern DirEntry *games_tab_entries;
 extern int games_tab_entry_count;

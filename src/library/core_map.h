@@ -1,7 +1,7 @@
 #ifndef CORE_MAP_H
 #define CORE_MAP_H
+#include "../app/frogui_config.h"
 #include <stdbool.h>
-#include "frogui_config.h"
 
 typedef struct {
   const char *console_name;

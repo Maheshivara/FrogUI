@@ -1,4 +1,4 @@
-#include "app.h"
+#include "../app/app.h"
 
 /* internal helpers */
 static bool settings_row_enabled(const SRow *r);

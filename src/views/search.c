@@ -1,4 +1,5 @@
-#include "app.h"
+#include "search.h"
+#include "../app/app.h"
 
 /* internal helpers */
 static int str_icontains(const char *hay, const char *needle);

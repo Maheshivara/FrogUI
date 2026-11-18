@@ -1,8 +1,7 @@
 #ifndef REMAP_WIZARD_H
 #define REMAP_WIZARD_H
 
-#include "app_common.h"
-
+#include "../app/app_common.h"
 
 extern bool remap_wizard_active;
 extern int remap_step;

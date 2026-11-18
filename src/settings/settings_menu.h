@@ -1,7 +1,7 @@
 #ifndef SETTINGS_MENU_H
 #define SETTINGS_MENU_H
 
-#include "app_common.h"
+#include "../app/app_common.h"
 
 /* Data-driven settings menu: rows are HEADERs (non-selectable dividers) or
  * options. Adding, reordering, or grouping = just editing this table; the nav,

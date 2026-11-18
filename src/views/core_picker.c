@@ -1,4 +1,5 @@
-#include "app.h"
+#include "core_picker.h"
+#include "../app/app.h"
 
 /* internal helpers */
 static void picker_rows_build(void);

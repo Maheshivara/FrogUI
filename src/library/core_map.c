@@ -1,8 +1,8 @@
 /* core_map.c - which libretro core / standalone binary runs a ROM.
  * Pure data + lookups: no UI state, no I/O. */
+#include "core_map.h"
 #include <string.h>
 #include <strings.h>
-#include "core_map.h"
 
 /* Console → core mapping (folder name → libretro .so)
  * Folder names match /mnt/sdcard/roms/ subdirectories (gb300_multicore

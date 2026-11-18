@@ -1,4 +1,4 @@
-#include "app.h"
+#include "../app/app.h"
 
 /* internal helpers */
 static void add_core_choice(const char *p);

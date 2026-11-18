@@ -10,10 +10,12 @@
  * unavailable. */
 void cube_set_backlight(int level);
 
-/* Read cubevol's persistentmem-stored raw backlight (slot 30), -1 on failure. */
+/* Read cubevol's persistentmem-stored raw backlight (slot 30), -1 on failure.
+ */
 int cube_pmem_backlight_read(void);
 
-/* Read cubevol's persistentmem-stored snd volume (0..100-ish), -1 on failure. */
+/* Read cubevol's persistentmem-stored snd volume (0..100-ish), -1 on failure.
+ */
 int cube_pmem_volume_read(void);
 
 /* Write the SHARED system volume: cubevol's persistentmem slot (the physical
@@ -21,7 +23,8 @@ int cube_pmem_volume_read(void);
  * Makes Settings' Volume slider and the console's physical volume buttons one
  * and the same value, applied in real time. Returns 0 if the stored value is
  * persisted (or already matched), -1 if the persistentmem write failed (the
- * audible hardware mirror is still applied). Writes EEPROM only on real change. */
+ * audible hardware mirror is still applied). Writes EEPROM only on real change.
+ */
 int cube_pmem_volume_write(int level);
 
 /* Live volume preview for the Settings slider: I2SO hardware mirror only,

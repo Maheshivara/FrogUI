@@ -1,7 +1,7 @@
 #ifndef ASSETS_SCAN_H
 #define ASSETS_SCAN_H
 
-#include "app_common.h"
+#include "../app/app_common.h"
 
 /* Fonts are discovered at runtime by scanning the font directories for
  * .ttf/.otf files. font_files[] holds the on-disk filename (persisted in

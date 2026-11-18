@@ -1,8 +1,7 @@
 #ifndef USB_MODE_H
 #define USB_MODE_H
 
-#include "app_common.h"
-
+#include "../app/app_common.h"
 
 extern bool usb_mode_confirm_active;
 extern bool usb_mode_initiated_active;

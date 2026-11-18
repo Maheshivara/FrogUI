@@ -1,7 +1,7 @@
 #ifndef SYSTEM_VIEW_H
 #define SYSTEM_VIEW_H
 
-#include "app_common.h"
+#include "../app/app_common.h"
 
 #define SYSTEM_CAROUSEL_FRAMES 12
 /* The system grid uses small cached icons independently from background packs.

@@ -1,8 +1,8 @@
 #ifndef GAMELIST_UI_H
 #define GAMELIST_UI_H
 
-#include "app_common.h"
-#include "app_state.h"
+#include "../app/app_common.h"
+#include "../app/app_state.h"
 #include "gl_browser.h"
 
 /* ".../roms/<system>" for a path inside a system; false at the roms root and

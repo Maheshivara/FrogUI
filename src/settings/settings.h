@@ -1,7 +1,7 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include "app_common.h"
+#include "../app/app_common.h"
 
 /* --- Settings ---
  * Stored at /mnt/sdcard/frogui/settings.txt, key=value format.
@@ -73,6 +73,7 @@ void settings_load_file(void);
 bool otg_roms_available(void);
 void resolve_roms_root(void);
 void settings_save_file(void);
-/* Called by render.c (battery glyph): 1 = solid colour mode. Must stay global. */
+/* Called by render.c (battery glyph): 1 = solid colour mode. Must stay global.
+ */
 int frogui_battery_color_mode(void);
 #endif

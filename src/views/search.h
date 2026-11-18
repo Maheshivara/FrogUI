@@ -1,8 +1,8 @@
 #ifndef SEARCH_H
 #define SEARCH_H
 
-#include "app_common.h"
-#include "app_state.h"
+#include "../app/app_common.h"
+#include "../app/app_state.h"
 
 typedef struct {
   char name[256];

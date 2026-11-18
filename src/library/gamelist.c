@@ -89,7 +89,7 @@ static char *xml_decode(const char *src, size_t len) {
           k++;
         while (k < len && src[k] != ';' && digits < 6) {
           char c = src[k];
-          int d = (c >= '0' && c <= '9')   ? c - '0'
+          int d = (c >= '0' && c <= '9')          ? c - '0'
                   : (hex && c >= 'a' && c <= 'f') ? c - 'a' + 10
                   : (hex && c >= 'A' && c <= 'F') ? c - 'A' + 10
                                                   : -1;

@@ -1,4 +1,4 @@
-#include "app.h"
+#include "../app/app.h"
 
 void cache_file_for(const char *path, char *out, size_t n) {
   /* djb2 hash of the path -> stable filename (exact path re-checked on load,

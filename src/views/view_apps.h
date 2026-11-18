@@ -1,7 +1,7 @@
 #ifndef VIEW_APPS_H
 #define VIEW_APPS_H
 
-#include "app_common.h"
+#include "../app/app_common.h"
 
 /* Apps are virtual top-level entries. The on-card folder names remain stable
  * for compatibility, while the Apps tab presents friendly names and hides
