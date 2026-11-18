@@ -7,7 +7,6 @@
  * icube reads that file and launches picoarch with the real game core.
  */
 
-#include <ctype.h>
 #include <dirent.h>
 #include <fcntl.h>
 #include <linux/fb.h>
@@ -24,30 +23,23 @@
 #include <time.h>
 #include <unistd.h>
 
+#include "app.h"
 #include "backlight.h"
 #include "banner.h"
+#include "battery.h"
 #include "common/i18n.h"
 #include "core_map.h"
-#include "battery.h"
-#include "debug.h"
 #include "core_override.h"
+#include "debug.h"
 #include "ext_filter.h"
 #include "favorites.h"
 #include "font.h"
 #include "frogui_config.h"
 #include "input.h"
 #include "libretro.h"
-#include "paths.h"
 #include "recent_games.h"
 #include "render.h"
 #include "theme.h"
-#include "app.h"
-
-
-
-
-
-
 
 /* Libretro callbacks */
 static retro_video_refresh_t video_cb = NULL;
@@ -56,136 +48,6 @@ retro_audio_sample_t audio_cb = NULL;
 retro_audio_sample_batch_t audio_batch_cb = NULL;
 static retro_input_poll_t input_poll_cb = NULL;
 static retro_input_state_t input_state_cb = NULL;
-
-
-
-
-
-
-
-/* --- Input (via input.c / cubevol shmem) --- */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* Filter option removed from the menu — always bilinear (HW path). */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* ---------------- OnionOS-style game switcher (recents as box-art carousel)
- * ---- Art = the newest gameplay screenshot picoarch wrote (.scr.bmp or
- * .st<N>.bmp); if no capture exists, fall back to box art/title artwork.
- * Toggled by settings_game_switcher. */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* ----------------------------- Search (X button) -----------------------------
- */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 static void handle_input(void) {
   input_update();
@@ -441,8 +303,7 @@ static void handle_input(void) {
       char app_path[MAX_PATH_LEN];
       int app_index = -1;
       if (selected_index < entry_count) {
-        for (int ai = 0; ai < app_def_count();
-             ai++)
+        for (int ai = 0; ai < app_def_count(); ai++)
           if (strcmp(entries[selected_index].name, app_defs[ai].key) == 0) {
             app_index = ai;
             break;
@@ -825,12 +686,6 @@ bool retro_load_game(const struct retro_game_info *info) {
 }
 
 void retro_unload_game(void) {}
-
-
-
-
-
-
 
 void retro_run(void) {
   /* Take input from the libretro frontend (rkgame feeds cores this way; the
