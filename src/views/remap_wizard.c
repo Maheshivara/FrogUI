@@ -1,4 +1,4 @@
-#include "../app/app.h"
+#include "../app/app.h" // IWYU pragma: keep
 
 /* internal helpers */
 static int remap_wizard_count(void);

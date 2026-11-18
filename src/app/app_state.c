@@ -1,4 +1,4 @@
-#include "app.h"
+#include "app.h" // IWYU pragma: keep
 
 DirEntry *entries = NULL;
 int entry_count = 0;

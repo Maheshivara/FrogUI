@@ -1,5 +1,5 @@
 #include "extf_kbd.h"
-#include "../app/app.h"
+#include "../app/app.h" // IWYU pragma: keep
 
 /* Extension-entry mode of the on-screen keyboard (review request): reuses
  * the search keyboard (same rows/keys) to let the user type a custom

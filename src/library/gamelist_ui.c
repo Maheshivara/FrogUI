@@ -1,4 +1,4 @@
-#include "../app/app.h"
+#include "../app/app.h" // IWYU pragma: keep
 #include "../vendor/stb_image.h"
 
 bool gamelist_root_for(const char *path, char *out, size_t n) {
@@ -65,61 +65,34 @@ const char *gamelist_title_for(const char *dir, const char *file) {
 
 /* ---- image loading ------------------------------------------------------ */
 
-#define GL_THUMB_MAX 320 /* longest side kept in RAM */
-
+/* Gamelist images go through render.c's own loader so they behave exactly like
+ * .res artwork: decoded into render.c's shared static buffer (capped 250x250,
+ * alpha kept), nothing to free, free_thumbnail() is a no-op reset.
+ * load_thumbnail() takes a path WITHOUT extension and probes
+ * .png/.jpg/.jpeg/.bmp (then .rgb565), so strip a known image extension. */
 bool load_thumbnail_file(const char *path, Thumbnail *tb) {
-  int w, h, ch;
-  unsigned char *img = stbi_load(path, &w, &h, &ch, 4);
-  if (!img)
+  char base[MAX_PATH_LEN];
+  if (!path || !tb ||
+      snprintf(base, sizeof base, "%s", path) >= (int)sizeof base)
     return false;
-  int dw = w, dh = h;
-  if (w > GL_THUMB_MAX || h > GL_THUMB_MAX) {
-    if (w >= h) {
-      dw = GL_THUMB_MAX;
-      dh = h * GL_THUMB_MAX / w;
-    } else {
-      dh = GL_THUMB_MAX;
-      dw = w * GL_THUMB_MAX / h;
-    }
-    if (dh < 1)
-      dh = 1;
-    if (dw < 1)
-      dw = 1;
-  }
-  uint16_t *data = (uint16_t *)malloc((size_t)dw * dh * sizeof(uint16_t));
-  uint8_t *alpha = (uint8_t *)malloc((size_t)dw * dh);
-  if (!data || !alpha) {
-    free(data);
-    free(alpha);
-    stbi_image_free(img);
-    return false;
-  }
-  for (int y = 0; y < dh; y++) {
-    const unsigned char *row = img + (size_t)(y * h / dh) * w * 4;
-    for (int x = 0; x < dw; x++) {
-      const unsigned char *p = row + (size_t)(x * w / dw) * 4;
-      data[(size_t)y * dw + x] =
-          (uint16_t)(((p[0] & 0xF8) << 8) | ((p[1] & 0xFC) << 3) | (p[2] >> 3));
-      alpha[(size_t)y * dw + x] = p[3];
-    }
-  }
-  stbi_image_free(img);
-  memset(tb, 0, sizeof *tb);
-  tb->data = data;
-  tb->alpha = alpha;
-  tb->width = dw;
-  tb->height = dh;
-  return true;
+  char *slash = strrchr(base, '/');
+  char *dot = strrchr(base, '.');
+  if (dot && (!slash || dot > slash) &&
+      (!strcasecmp(dot, ".png") || !strcasecmp(dot, ".jpg") ||
+       !strcasecmp(dot, ".jpeg") || !strcasecmp(dot, ".bmp") ||
+       !strcasecmp(dot, ".rgb565")))
+    *dot = '\0';
+  return load_thumbnail(base, tb) && tb->data;
 }
 
-int game_art_load(const char *full_path, int kind, Thumbnail *tb) {
+int game_art_load(const char *full_path, ArtworkKind kind, Thumbnail *tb) {
   char root[MAX_PATH_LEN], img[MAX_PATH_LEN];
   bool have_root = gamelist_root_for(full_path, root, sizeof root);
   const Game *g = have_root ? gl_lookup(root, full_path) : NULL;
   if (g) {
     /* ES convention: thumbnail = box art, image = screenshot/title. */
-    const char *k1 = (kind == ARTWORK_BOXART) ? "thumbnail" : "image";
-    const char *k2 = (kind == ARTWORK_BOXART) ? "image" : "thumbnail";
+    const char *k1 = "image";
+    const char *k2 = "thumbnail";
     if ((gl_image_path(root, g, k1, img, sizeof img) &&
          load_thumbnail_file(img, tb) && tb->data) ||
         (gl_image_path(root, g, k2, img, sizeof img) &&

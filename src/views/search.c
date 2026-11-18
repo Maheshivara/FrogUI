@@ -1,5 +1,5 @@
 #include "search.h"
-#include "../app/app.h"
+#include "../app/app.h" // IWYU pragma: keep
 
 /* internal helpers */
 static int str_icontains(const char *hay, const char *needle);

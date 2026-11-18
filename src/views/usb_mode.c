@@ -1,4 +1,4 @@
-#include "../app/app.h"
+#include "../app/app.h" // IWYU pragma: keep
 
 /* The UI's idle path polls input at about 1 kHz.  These must not be frame
  * counters: a 240-frame confirmation used to disappear in a fraction of a

@@ -1,4 +1,4 @@
-#include "../app/app.h"
+#include "../app/app.h" // IWYU pragma: keep
 
 /* internal helpers */
 static bool settings_row_enabled(const SRow *r);
@@ -20,6 +20,7 @@ const SRow settings_rows[] = {
     {RT_FONT, "settings.font"},
     {RT_RANGE, "settings.font_size", &settings_font_size, 18, 26, 1},
     {RT_TOGGLE, "settings.battery_colour_mode", &settings_battery_color},
+    {RT_TOGGLE, "settings.stock_battery_indicator", &settings_stock_battery},
     {RT_TOGGLE, "settings.background_images", &settings_backgrounds},
     {RT_RANGE, "settings.background_dim", &settings_background_dim, 0, 100, 5},
     {RT_WALLPAPER, "settings.wallpaper"},

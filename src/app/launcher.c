@@ -1,4 +1,4 @@
-#include "app.h"
+#include "app.h" // IWYU pragma: keep
 
 /* internal helpers */
 static unsigned rgb565_to_888(uint16_t c);

@@ -1,4 +1,4 @@
-#include "../app/app.h"
+#include "../app/app.h" // IWYU pragma: keep
 
 /* Folder names remain the stable lookup key for cores and artwork. The
  * horizontal picker gets friendlier names without changing that contract. */

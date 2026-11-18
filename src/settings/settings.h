@@ -55,6 +55,7 @@ extern int settings_backgrounds;
 extern int settings_background_dim;
 extern int settings_file_cache;
 extern int settings_battery_color;
+extern int settings_stock_battery;
 extern int settings_language;
 extern int settings_game_switcher;
 extern int settings_load_recents;
@@ -66,6 +67,7 @@ extern const char *style_names[STYLE_COUNT];
 extern long long volume_last_commit_ms;
 extern int volume_committed_level;
 const char *treefrogui_version(void);
+
 void settings_apply(void);
 void settings_volume_commit_live(void);
 void settings_volume_commit_final(void);

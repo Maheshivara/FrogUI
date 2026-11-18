@@ -20,8 +20,11 @@ const Game *gamelist_meta(const char *full_path);
 const char *gamelist_title_for(const char *dir, const char *file);
 /* Artwork: gamelist image first, then (if allowed) the legacy .res lookup.
  * kind = ARTWORK_BOXART / ARTWORK_TITLE_SCREEN. 1 on success (tb->data set). */
-int game_art_load(const char *full_path, int kind, Thumbnail *tb);
-/* Loads an image file into a Thumbnail (RGB565 + alpha). */
+int game_art_load(const char *full_path, ArtworkKind kind, Thumbnail *tb);
+/* Loads an image file (any extension) via render.c into the shared Thumbnail
+ * buffer. */
 bool load_thumbnail_file(const char *path, Thumbnail *tb);
+/* render.c */
+int load_thumbnail(const char *base_path, Thumbnail *thumb);
 
 #endif

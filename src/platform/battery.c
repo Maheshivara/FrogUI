@@ -2,6 +2,7 @@
  */
 #include "battery.h"
 #include "../gfx/render.h"
+#include "../settings/settings.h"
 #include <fcntl.h>
 #include <linux/fb.h>
 #include <stdio.h>
@@ -10,15 +11,18 @@
 #include <sys/mman.h>
 #include <unistd.h>
 
-int min(int a, int b) { return (a < b) ? a : b; }
+#ifndef min
+#define min(a, b) ((a) < (b) ? (a) : (b))
+#endif
 
 /* Hide cubevol's battery glyph while leaving its centered volume popup intact.
  * fb1 is rotated and/or double-buffered on SF3500-class devices, so physical
  * top-right is not reliably memory top-right and the active page is not always
  * page zero. Clear every memory corner on every virtual page. */
 void fb1_clear_battery_zone(void) {
-  /* Temporary default: keep the stock cubevol battery glyph visible. */
-  return;
+  /* "Stock Battery Indicator" on: leave cubevol's own glyph alone. */
+  if (settings_stock_battery)
+    return;
   /* Persistent mmap + cached geometry: open/mmap ONCE. The old per-frame
    * open+ioctl+mmap+munmap+close stalled the loop (visible input lag).
    * Do not latch a failed first attempt: early boot may reach FrogUI before
@@ -138,8 +142,11 @@ static int g_batt_charging = 0;
 int frogui_battery_charging(void) { return g_batt_charging; }
 int frogui_battery_color_mode(void); /* defined after settings_battery_color */
 int frogui_battery_pct(void) {
-  /* Temporary default: disable the themed TreeFrogUI battery glyph. */
-  return -1;
+  /* "Stock Battery Indicator" on: -1 makes render_battery_* draw nothing, so
+   * only cubevol's stock glyph is visible. Read every frame, so the setting
+   * takes effect immediately (cubevol repaints its glyph on its own cycle). */
+  if (settings_stock_battery)
+    return -1;
   static int cached = -1, tick = 0;
   if (cached < 0 || (tick++ % 300) == 0) {
     int a1 = read_adc(0), a5 = read_adc(1);

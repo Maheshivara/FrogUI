@@ -1,4 +1,4 @@
-#include "../app/app.h"
+#include "../app/app.h" // IWYU pragma: keep
 
 /* internal helpers */
 static int font_has_ext(const char *name);

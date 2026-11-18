@@ -1,4 +1,4 @@
-#include "../app/app.h"
+#include "../app/app.h" // IWYU pragma: keep
 
 /* Greedy word wrap into at most `max_lines` lines of width `w` px. The last
  * line gets ".." when text remains. Returns the y below the last line drawn. */

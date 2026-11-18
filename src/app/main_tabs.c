@@ -1,4 +1,4 @@
-#include "app.h"
+#include "app.h" // IWYU pragma: keep
 
 /* internal helpers */
 static int restore_games_tab_entries(void);

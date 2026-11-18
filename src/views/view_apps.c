@@ -1,4 +1,5 @@
-#include "../app/app.h"
+#include "../app/app.h" // IWYU pragma: keep
+
 int app_def_count(void);
 
 const AppEntry app_defs[] = {
@@ -31,6 +32,7 @@ const char *app_folder_path(int index, char *out, size_t out_size) {
   }
   return NULL;
 }
+
 int is_app_folder_name(const char *name) {
   return name && (!strcasecmp(name, "rockbox") || !strcasecmp(name, "music") ||
                   !strcasecmp(name, "audio") || !strcasecmp(name, "videos") ||
@@ -38,6 +40,7 @@ int is_app_folder_name(const char *name) {
                   !strcasecmp(name, "photos") || !strcasecmp(name, "ebook") ||
                   !strcasecmp(name, "ebooks"));
 }
+
 void scan_apps_tab(void) {
   strncpy(current_path, ROMS_PATH, MAX_PATH_LEN - 1);
   current_path[MAX_PATH_LEN - 1] = '\0';
@@ -87,6 +90,7 @@ void scan_apps_tab(void) {
     selected_index = 0;
   scroll_offset = 0;
 }
+
 const char *app_label(const char *key) {
   for (size_t i = 0; i < (size_t)app_def_count(); i++)
     if (strcasecmp(key, app_defs[i].key) == 0)

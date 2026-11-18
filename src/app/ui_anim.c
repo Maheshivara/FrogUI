@@ -1,4 +1,4 @@
-#include "app.h"
+#include "app.h" // IWYU pragma: keep
 
 uint16_t *view_transition_old = NULL;
 uint16_t *view_transition_out = NULL;

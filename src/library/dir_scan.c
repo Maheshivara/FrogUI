@@ -1,4 +1,4 @@
-#include "../app/app.h"
+#include "../app/app.h" // IWYU pragma: keep
 
 /* internal helpers */
 static int dirent_is_dir(const char *parent, const struct dirent *e);

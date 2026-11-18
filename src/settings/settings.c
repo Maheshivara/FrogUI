@@ -1,6 +1,5 @@
-#include "../app/app.h"
+#include "../app/app.h" // IWYU pragma: keep
 
-/* internal helpers */
 static void mkdir_p(const char *path);
 static void settings_write_volume(void);
 
@@ -56,6 +55,8 @@ int settings_background_dim =
     15; /* darken background artwork: 0=unchanged, 100=black */
 int settings_file_cache =
     1; /* cache folder listings (mtime-keyed) for fast nav: 0=off, 1=on */
+int settings_stock_battery =
+    0; /* 1 = stock cubevol battery glyph, 0 = FrogUI themed icon */
 int settings_battery_color =
     0; /* "Nel Battery Mode": solid color light by level instead of fill bar */
 int settings_language;
@@ -309,6 +310,8 @@ void settings_load_file(void) {
     } else if (strcmp(line, "folder_cache") == 0) {
       /* Legacy alias: preserve the user's old cache preference. */
       settings_file_cache = (strcmp(val, "on") == 0) ? 1 : 0;
+    } else if (strcmp(line, "stock_battery") == 0) {
+      settings_stock_battery = (strcmp(val, "on") == 0) ? 1 : 0;
     } else if (strcmp(line, "battery_color") == 0) {
       settings_battery_color = (strcmp(val, "on") == 0) ? 1 : 0;
     } else if (strcmp(line, "disable_sleep") == 0) {
@@ -418,6 +421,7 @@ void settings_save_file(void) {
   fprintf(f, "background_dim=%d\n", settings_background_dim);
   fprintf(f, "file_cache=%s\n", onoff_names[settings_file_cache]);
   fprintf(f, "battery_color=%s\n", onoff_names[settings_battery_color]);
+  fprintf(f, "stock_battery=%s\n", onoff_names[settings_stock_battery]);
   fprintf(f, "game_switcher=%s\n", onoff_names[settings_game_switcher]);
   fprintf(f, "load_recents=%s\n", onoff_names[settings_load_recents]);
   fprintf(f, "rom_source=%s\n", rom_source_names[settings_rom_source]);

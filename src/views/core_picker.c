@@ -1,5 +1,5 @@
 #include "core_picker.h"
-#include "../app/app.h"
+#include "../app/app.h" // IWYU pragma: keep
 
 /* internal helpers */
 static void picker_rows_build(void);

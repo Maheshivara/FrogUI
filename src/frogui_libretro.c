@@ -14,7 +14,7 @@
 #include <time.h>
 #include <unistd.h>
 
-#include "app/app.h"
+#include "app/app.h" // IWYU pragma: keep
 #include "app/debug.h"
 #include "app/frogui_config.h"
 #include "common/i18n.h"

@@ -1,4 +1,4 @@
-#include "../app/app.h"
+#include "../app/app.h" // IWYU pragma: keep
 #include "../vendor/stb_image.h"
 
 /* internal helpers */
