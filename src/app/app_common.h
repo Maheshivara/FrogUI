@@ -1,0 +1,37 @@
+#ifndef APP_COMMON_H
+#define APP_COMMON_H
+/* System + project-wide headers shared by every FrogUI module. */
+#include <ctype.h>
+#include <dirent.h>
+#include <fcntl.h>
+#include <linux/fb.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+#include <sys/ioctl.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <time.h>
+#include <unistd.h>
+#include "backlight.h"
+#include "banner.h"
+#include "common/i18n.h"
+#include "core_map.h"
+#include "battery.h"
+#include "debug.h"
+#include "core_override.h"
+#include "ext_filter.h"
+#include "favorites.h"
+#include "font.h"
+#include "frogui_config.h"
+#include "input.h"
+#include "libretro.h"
+#include "paths.h"
+#include "recent_games.h"
+#include "render.h"
+#include "theme.h"
+#endif

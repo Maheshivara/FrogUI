@@ -1,6 +1,25 @@
 # Directory where the Makefile lives
 MAKEFILE_DIR := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 
+# ---------------------------------------------------------------------------
+# Source layout: every .c under src/ and the sub-directories below is built
+# automatically. A new file needs NO Makefile edit; a new sub-directory only
+# needs adding to SRC_DIRS.
+# ---------------------------------------------------------------------------
+SRC_ROOT := $(MAKEFILE_DIR)/src
+SRC_DIRS := app settings library views platform gfx common vendor
+SRC_PATHS := $(SRC_ROOT) $(addprefix $(SRC_ROOT)/,$(SRC_DIRS))
+
+APP_SRCS := $(foreach d,$(SRC_PATHS),$(wildcard $(d)/*.c))
+APP_NAMES := $(notdir $(APP_SRCS))
+
+# Objects are written flat into out/app, so basenames must be unique.
+ifneq ($(words $(APP_NAMES)),$(words $(sort $(APP_NAMES))))
+$(error Duplicate source basenames: $(filter-out $(sort $(APP_NAMES)),$(APP_NAMES)))
+endif
+
+vpath %.c $(SRC_PATHS)
+
 # Output directories
 OUTDIR      ?= $(MAKEFILE_DIR)/out
 APP_OUTDIR  ?= $(OUTDIR)/app
@@ -29,25 +48,16 @@ SB_OBJ := $(SB_OUTDIR)/SheenBidi.lo
 OUT_LICENSES := $(OUTDIR)/frogui_libretro.harfbuzz.LICENSE \
                 $(OUTDIR)/frogui_libretro.sheenbidi.LICENSE
 
-# Explicit Object List in APP_OUTDIR
-OBJS := $(APP_OUTDIR)/frogui_libretro.lo \
-        $(APP_OUTDIR)/render.lo \
-        $(APP_OUTDIR)/font.lo \
-        $(APP_OUTDIR)/recent_games.lo \
-        $(APP_OUTDIR)/theme.lo \
-        $(APP_OUTDIR)/favorites.lo \
-        $(APP_OUTDIR)/banner.lo \
-        $(APP_OUTDIR)/backlight.lo \
-        $(APP_OUTDIR)/input.lo \
-        $(APP_OUTDIR)/core_override.lo \
-        $(APP_OUTDIR)/ext_filter.lo \
-        $(APP_OUTDIR)/i18n.lo \
-        $(SB_OBJ) \
-        $(HB_OBJ)
+# Object list: every app source + the two bundled libraries
+APP_OBJS := $(patsubst %.c,$(APP_OUTDIR)/%.lo,$(APP_NAMES))
+OBJS     := $(APP_OBJS) $(SB_OBJ) $(HB_OBJ)
 
 # Compiler & Linker Flags
-INCLUDES := -I. \
-            -I./common \
+# Sources include each other with plain "name.h" (and "common/i18n.h"), so
+# every module directory plus src/ itself is on the include path.
+INCLUDES := -I$(MAKEFILE_DIR) \
+            -I$(SRC_ROOT) \
+            $(addprefix -I,$(SRC_PATHS)) \
             -I$(SYSROOT)/usr/include \
             -I$(SYSROOT)/usr/include/freetype2 \
             -I$(HARFBUZZ_DIR)/src \
@@ -59,6 +69,10 @@ CFLAGS   := -mips32r2 -march=mips32r2 -mtune=24kc -mfp32 -mhard-float -mlong-cal
             --sysroot=$(SYSROOT) -fPIC -G0 -Wall $(INCLUDES) -Ofast \
             -ffunction-sections -fdata-sections \
             -DPLATFORM_SF3000 -DNDEBUG -D__LIBRETRO__
+
+# Header dependency tracking (the old Makefile did not rebuild on header edits,
+# which matters now that state is shared through headers).
+DEPFLAGS = -MMD -MP
 
 # Size-optimized HarfBuzz flags (Thread-safety preserved)
 HB_CFLAGS := $(CFLAGS) \
@@ -125,14 +139,10 @@ $(TARGET): $(OUTDIR) $(APP_OUTDIR) $(HB_OUTDIR) $(SB_OUTDIR) $(OBJS)
 	@ls -la $@
 	@echo "Build successful!"
 
-# Application Compile Rules
+# Application Compile Rule (vpath finds the .c in any src/ sub-directory)
 $(APP_OUTDIR)/%.lo: %.c | $(APP_OUTDIR) init_submodules
 	@echo "CC $<"
-	$(CC) $(CFLAGS) -c -o $@ $<
-
-$(APP_OUTDIR)/%.lo: common/%.c | $(APP_OUTDIR) init_submodules
-	@echo "CC $<"
-	$(CC) $(CFLAGS) -c -o $@ $<
+	$(CC) $(CFLAGS) $(DEPFLAGS) -c -o $@ $<
 
 # SheenBidi Unity Compile Rule
 $(SB_OBJ): $(SB_SRC) | $(SB_OUTDIR) init_submodules
@@ -147,4 +157,10 @@ $(HB_OBJ): $(HB_SRC) | $(HB_OUTDIR) init_submodules
 clean:
 	rm -rf $(OUTDIR)
 
-.PHONY: all clean init_submodules
+# Print the discovered sources (sanity check after moving files)
+list-sources:
+	@printf '%s\n' $(APP_SRCS)
+
+-include $(APP_OBJS:.lo=.d)
+
+.PHONY: all clean init_submodules list-sources
